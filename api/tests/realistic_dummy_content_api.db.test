@@ -36,6 +36,8 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
    * Test case for realistic_dummy_content_api with the database.
    */
   public function testModule() {
+    $this->makeImageFieldUnlimited();
+
     // Create a node with the devel_generate property set.
     $nids = array();
     for ($i = 1; $i <= 9; $i++) {
@@ -71,8 +73,10 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
 
     foreach ($nodes as $nid => $node) {
       // The node should have replaced the image with our own.
-      $filename = $node->field_image[LANGUAGE_NONE][0]['filename'];
-      $this->assertTrue(drupal_substr($filename, 0, drupal_strlen('dummyfile')) == 'dummyfile', 'The image file was replaced as expected for node/article/field_image. We know this because the filename starts with the string "dummyfile"');
+      foreach ($node->field_image[LANGUAGE_NONE] as $index => $image_field_instance) {
+        $filename = $image_field_instance['filename'];
+        $this->assertTrue(drupal_substr($filename, 0, drupal_strlen('dummyfile')) == 'dummyfile', 'The image file was replaced as expected for node/article/field_image. We know this because the filename starts with the string "dummyfile"');
+      }
 
       $title = $node->title[0];
       $title_expected = $expected_values['title'][($nid - 1)%3];
@@ -89,4 +93,18 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
     $user = user_load($user->uid);
     $this->assertTrue($current_pictre == $user->picture, 'The dummy file generation happens when the user is first created, not when it is resaved.');
   }
+
+  /**
+   * Make the cardinality of the image field unlimited.
+   *
+   * By default, the cardinality of the image field, which we are using for tests, is 1.
+   * Making it unlimited allows us to test modifying more than just the first instance
+   * of a field.
+   */
+  function makeImageFieldUnlimited() {
+    $image_field = field_info_field('field_image');
+    $image_field['cardinality'] = -1;
+    field_update_field($image_field);
+  }
+
 }
