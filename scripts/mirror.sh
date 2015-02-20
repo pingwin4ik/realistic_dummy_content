@@ -11,11 +11,9 @@ if [ "$#" -ne  "2" ]
     echo ""
     echo "./scripts/mirror.sh git@example.com/source/repo git@example.com/destination/repo"
 else
-  git clone $2 _clonetest_
-  rm -rf _clonetest_
   git clone --mirror $1 _project_
   cd _project_
-  git push --mirror $2
+  echo AA$(git push --mirror $2)BB
   cd ..
   rm -rf _project_
 fi
