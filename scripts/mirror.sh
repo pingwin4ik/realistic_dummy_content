@@ -13,7 +13,9 @@ if [ "$#" -ne  "2" ]
 else
   git clone --mirror $1 _project_
   cd _project_
-  echo AA$(git push --mirror $2)BB
+  git push --mirror $2
+  RETURN=$?
   cd ..
   rm -rf _project_
+  exit $RETURN
 fi
