@@ -3,5 +3,5 @@ machine:
     - docker
 
 test:
-  post:
+  override:
     - ./scripts/test.sh
