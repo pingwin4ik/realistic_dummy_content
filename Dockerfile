@@ -7,7 +7,4 @@ RUN cd ./srv/drupal/www && patch -p1 < drupal-simpletest-fails-to-drop-tables-sq
 
 EXPOSE 80
 
-RUN cd ./srv/drupal/www && drush --uri=http://127.0.0.1 test-run "Realistic dummy content" 
-
-
-
+RUN cd ./srv/drupal/www && drush --uri=http://127.0.0.1 test-run "Realistic dummy content"
