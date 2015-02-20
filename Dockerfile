@@ -1,3 +1,7 @@
+# Our Dockerfile needs to be named "Dockerfile" because we are using CircleCI
+# and it does not allow us to use the -f flag to specify another filename (for
+# example Dockerfile-test). (See also ./scripts/test.sh).
+
 FROM alberto56/docker-drupal:latest
 
 ADD . ./srv/drupal/www/sites/all/modules/realistic_dummy_content/
