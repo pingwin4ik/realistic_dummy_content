@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentAPIFieldModifier autoload class.
+ * Define RealisticDummyContentFieldModifier autoload class.
  */
 
 /**
@@ -11,7 +11,7 @@
  *
  * All manipulation of generated content to make it more realistic
  * passes through modifiers (direct or indirect subclasses of
- * RealisticDummyContentAPIEntityBase).
+ * RealisticDummyContentEntityBase).
  *
  * This class allows active modules to put files in a specific
  * directory hierarchy resembling realistic_dummy_content/fields/
@@ -25,7 +25,7 @@
  * articles; examples of properties include the user entity's
  * picture property, and the title of nodes.
  */
-class RealisticDummyContentAPIFieldModifier extends RealisticDummyContentAPIEntityBase {
+class RealisticDummyContentFieldModifier extends RealisticDummyContentField {
   /**
    * Get properties for the entity, for example user's picture or node's name.
    */
@@ -58,7 +58,7 @@ class RealisticDummyContentAPIFieldModifier extends RealisticDummyContentAPIEnti
   }
 
   /**
-   * Override RealisticDummyContentAPIEntityBase::Modify().
+   * Override RealisticDummyContentEntityBase::Modify().
    */
   function Modify() {
     $fields = $this->GetFields();
