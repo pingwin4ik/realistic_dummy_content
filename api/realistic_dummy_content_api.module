@@ -48,7 +48,7 @@ function realistic_dummy_content_api_user_insert(&$edit, $account, $category) {
 /**
  * Implements hook_realistic_dummy_content_attribute_manipular_alter().
  */
-function realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter(&$class, &$machine_name) {
+function realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter(&$class, &$type, &$machine_name) {
   switch ($machine_name) {
     case 'picture':
       $class = 'RealisticDummyContentPicture';

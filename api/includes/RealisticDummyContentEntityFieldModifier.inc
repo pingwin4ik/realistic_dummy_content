@@ -41,7 +41,7 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
     $fields = $this->GetFields();
     foreach ((array)$this->GetEntity() as $property => $info) {
       if (!in_array($property, $fields) && $this->filter($property)) {
-        $modifiable_properties[] = new RealisticDummyContentProperty($property);
+        $this->AddModifier($modifiable_properties, 'property', $property);
       }
     }
     return $modifiable_properties;
@@ -58,10 +58,75 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
     $fields = field_info_fields();
     foreach ($fields as $field => $info) {
       if (isset($info['bundles'][$type]) && is_array($info['bundles'][$type]) && in_array($this->GetBundle(), $info['bundles'][$type]) && $this->filter($field)) {
-        $modifiable_fields[] = new RealisticDummyContentProperty($field);
+        $this->AddModifier($modifiable_properties, 'field', $field);
       }
     }
     return $modifiable_fields;
+  }
+
+  /**
+   * Adds a modifier to a list of attribute modifiers.
+   *
+   * To abstract away the difference between fields and properties, we
+   * call them all attributes. Modifiers will modify attributes depending on
+   * what they are. For example, a user picture is modified differently than
+   * an image in an article. This is managed through an extensible class
+   * hierarchy. Modules, including this one, can implement
+   * hook_realistic_dummy_content_attribute_manipular_alter() to determine
+   * which class should modify which attribute (field or property).
+   *
+   * By default, we will consider that properties are text properties and that
+   * fields' [value] property should be modified. This is not the case, however
+   * for user pictures (which should load a file), body fields (which contain
+   * a text format), and others. These are all defined in subclasses and can
+   * be extended by module developers.
+   *
+   * @param &$modifiers
+   *   Existing array of subclasses of RealisticDummyContentAttribute, to which
+   *   new modifiers will be added.
+   * @param $type
+   *   Either 'property' or 'field'
+   * @param $name
+   *   Name of the property or field, for example 'body', 'picture', 'title',
+   *  'field_image'.
+   */
+  function AddModifier(&$modifiers, $type, $name) {
+    $class = '';
+    switch ($type) {
+      case 'property':
+        $original_class = 'RealisticDummyContentTextProperty';
+        $attribute_type = $name;
+        break;
+      case 'field':
+        $original_class = 'RealisticDummyContentValueField';
+        $field_info = field_info_field($name);
+        $attribute_type = $field_info['type'];
+        break;
+      default:
+        return;
+        break;
+    }
+    $class = $original_class;
+    drupal_alter($class, $type, $name);
+
+    if (!$class) {
+      // third-parties might want to signal that certain fields cannot be
+      // modified (they can be too complex for the default modifier and do not yet
+      // have a custom modifier).
+      return;
+    }
+    // @TODO check if class is abstract
+    elseif (class_exists($class)) {
+      $modifier = new $class($this, $name);
+    }
+    else {
+      watchdog('realistic_dummy_content_api', 'Class does not exist: @c. This is probably because a third-party module has implemented realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter() with a class that cannot be implemented. @original will used instead.', array('@c' => $class, '@original' => $original_class));
+      $modifier = new $original_class($this, $name);
+    }
+
+    if (isset($modifier)) {
+      $modifiers[] = $modifier;
+    }
   }
 
   /**

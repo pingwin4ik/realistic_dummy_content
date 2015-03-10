@@ -3,219 +3,78 @@
 /**
  * @file
  *
- * Define RealisticDummyContentFieldModifier autoload class.
+ * Define RealisticDummyContentTermReferenceField autoload class.
  */
 
 /**
- * Field modifier class.
- *
- * All manipulation of generated content to make it more realistic
- * passes through modifiers (direct or indirect subclasses of
- * RealisticDummyContentEntityBase).
- *
- * This class allows active modules to put files in a specific
- * directory hierarchy resembling realistic_dummy_content/fields/
- * [entity_type]/[bundle]/[field_name], and for these files to
- * define data which will replace the values of the corresponding
- * property or field in any given entity.
- *
- * The difference between a field a a property is that a field
- * is managed by Drupal's Field system, whereas a property is not.
- * Example of fields include field_image, which define images in
- * articles; examples of properties include the user entity's
- * picture property, and the title of nodes.
  */
-class RealisticDummyContentFieldModifier extends RealisticDummyContentField {
+class RealisticDummyContentTermReferenceField extends RealisticDummyContentField {
   /**
-   * Get properties for the entity, for example user's picture or node's name.
+   * {@inheritdoc}
    */
-  function GetProperties() {
-    $modifiable_properties = array();
-    $fields = $this->GetFields();
-    foreach ((array)$this->GetEntity() as $property => $info) {
-      if (!in_array($property, $fields) && $this->filter($property)) {
-        $modifiable_properties[] = $property;
+  function ValueFromFile($contents, $extension) {
+    try {
+      if (in_array($extension, $this->GetTextExtensions())) {
+        return array(
+          'tid' => $this-GetTid($contents),
+        );
       }
     }
-    return $modifiable_properties;
-  }
-
-  /**
-   * Get fields for the entity, for example body or field_image.
-   */
-  function GetFields() {
-    $modifiable_fields = array();
-    $entity = $this->GetEntity();
-    $type = $this->GetType();
-    $bundle = $this->GetBundle();
-    $fields = field_info_fields();
-    foreach ($fields as $field => $info) {
-      if (isset($info['bundles'][$type]) && is_array($info['bundles'][$type]) && in_array($this->GetBundle(), $info['bundles'][$type]) && $this->filter($field)) {
-        $modifiable_fields[] = $field;
-      }
-    }
-    return $modifiable_fields;
-  }
-
-  /**
-   * Override RealisticDummyContentEntityBase::Modify().
-   */
-  function Modify() {
-    $fields = $this->GetFields();
-    foreach ($fields as $field) {
-      $files = $this->GetCandidateFiles($field);
-      $this->ChangeField($files, $field);
-    }
-    $fields = $this->GetProperties();
-    foreach ($fields as $field) {
-      $files = $this->GetCandidateFiles($field);
-      $this->ChangeProperty($files, $field);
+    catch {
+      return NULL;
     }
   }
 
   /**
-   * Change a field, if possible, based on a value found in a list of files.
+   * Returns the term id for a term which is either existing or created on the fly.
    *
-   * Entities have fields (such as field_image) and properties (such as
-   * picture). They are dealt with differently. This function changes a field.
+   * Let's say an entity (node) contains a term reference to the taxonomy vocabulary
+   * "location", and in the realistic dummy content file structure, "Australia" is
+   * used for the location. If "Australia" exists as a "location", then this function
+   * will return its tid. If not, the term will be created, and then the tid will be
+   * returned.
    *
-   * @param $files
-   *   An array of file objects where we can fetch replacement content.
-   * @param $field
-   *   The name of the field to change.
-   */
-  function ChangeField($files, $field) {
-    $value = $this->ValueFromFile($files, TRUE);
-    if ($value) {
-      $entity = $this->GetEntity();
-      $entity->{$field}[LANGUAGE_NONE][0] = $value;
-      $this->SetEntity($entity);
-    }
-  }
-
-  /**
-   * Change a property, if possible, based on a value found in a list of files.
-   *
-   * Entities have fields (such as field_image) and properties (such as
-   * picture). They are dealt with differently. This function changes a
-   * property.
-   *
-   * @param $files
-   *   An array of file objects where we can fetch replacement content.
-   * @param $property
-   *   The name of the property to change.
-   */
-  function ChangeProperty($files, $property) {
-    $value = $this->ValueFromFile($files);
-    if ($value) {
-      $entity = $this->GetEntity();
-      if (is_array($value) && isset($value['value'])) {
-        $value = $value['value'];
-      }
-      $entity->{$property} = $value;
-      $this->SetEntity($entity);
-    }
-  }
-
-  /**
-   * Generate a random number, or during tests, give the first available number.
-   */
-  function rand($start, $end) {
-    $return = realistic_dummy_content_api_rand($start, $end, $this->GetHash());
-    return $return;
-  }
-
-  /**
-   * Given a list of files, return a value from one of them randomly.
-   *
-   * @TODO this function only supports image fields, picture properties, and
-   * text areas for now, see https://drupal.org/node/2266639.
-   *
-   * @param $files
-   *   An array of file objects
-   *
-   * @param $is_array
-   *   In the case where the file object itself is being returned, should
-   *   it be returned as an array as opposed to an object. (The user's "picture"
-   *   property expects a different format than file fields).
+   * @param $name
+   *   The string for the taxonomy term.
    *
    * @return
-   *   A file object or array, or an associative array with the keys "value" and
-   *   "format", or NULL if there are no files to choose from or the files have
-   *   the wrong extension.
+   *   The associated pre-existing or just-created tid.
    *
    * @throws
-   *   Exception.
+   *   Exception
    */
-  function ValueFromFile($files, $is_array = FALSE) {
-    if (count($files)) {
-      $rand_index = $this->rand(0, count($files) - 1);
-      $file = $files[$rand_index];
-      $filename = $file->filename;
-      $extension = pathinfo($filename, PATHINFO_EXTENSION);
-      $contents = $this->env()->file_get_contents($file->uri);
-      switch ($extension) {
-        case 'txt':
-          return array(
-            'value' => trim($contents),
-            // @TODO this is not always the default, allow the user to change
-            // this via a hook, or some other mechanism.
-            'format' => 'filtered_html',
-          );
-          break;
-        case 'png':
-        case 'jpg':
-        case 'gif':
-          $random = md5($file->uri) . rand(1000000000, 9999999999);
-          $file = $this->env()->file_save_data($contents, 'public://dummyfile' . $random . '.' . $extension);
-          $file->uid = $this->GetUid();
-          if ($is_array) {
-            return (array)file_save($file);
-          }
-          else {
-            return file_save($file);
-          }
-          break;
-        default:
-          break;
+  function GetTid($name) {
+    $vocabularies = taxonomy_get_vocabularies();
+    $field_info = field_info_field($this->GetName());
+    $candidate_existing_terms = array();
+    foreach ($field_info['settings']['allowed_values'] as $vocabulary) {
+      $vocabulary_name = $vocabulary['vocabulary'];
+      foreach ($vocabularies as $vocabulary) {
+        if ($vocabulary->machine_name == $vocabulary_name) {
+          $candidate_existing_terms = array_merge($candidate_existing_terms, taxonomy_get_tree($vocabulary->vid));
+        }
       }
     }
-    return NULL;
-  }
+    foreach ($candidate_existing_terms as $candidate_existing_term) {
+      if ($candidate_existing_term->name == $name) {
+        return $candidate_existing_term->tid;
+      }
+    }
 
-  /**
-   * Get the uid property of this entity, or 0.
-   *
-   * @return
-   *   The uid of the associated entity.
-   */
-  function GetUid() {
-    $entity = $this->GetEntity();
-    if (isset($entity->uid)) {
-      return $entity->uid;
+    if (!isset($vocabulary->vid)) {
+      throw new Exception('Expecting the taxonomy term reference to reference at least one vocabulary');
+    }
+
+    $term = new stdClass();
+    $term->name = $name;
+    $term->vid = $vocabulary->vid;
+    taxonomy_term_save($term);
+    if ($term->tid) {
+      return $term->tid;
     }
     else {
-      return 0;
+      throw new Exception('tid could not be determined');
     }
   }
 
-  /**
-   * Get all candidate files for a given field for this entity.
-   */
-  function GetCandidateFiles($field) {
-    $candidate_files = array();
-    foreach (module_list() as $module) {
-      $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . '/realistic_dummy_content/fields/' . $this->GetType() . '/' . $this->GetBundle() . '/' . $field;
-      $candidate_files = array_merge($candidate_files, array_values(file_scan_directory($filepath, '/.*\.(png|txt|gif|jpg)$/')));
-    }
-    $files = array();
-    foreach ($candidate_files as $candidate_file) {
-      if ($candidate_file->filename != 'README.txt') {
-        $files[$candidate_file->filename] = $candidate_file;
-      }
-    }
-    // We expect the files to be sorted alphabetically, which is not the case on all systems.
-    ksort($files);
-    return array_values($files);
-  }
 }

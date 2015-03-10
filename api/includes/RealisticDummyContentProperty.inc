@@ -25,29 +25,8 @@
  * articles; examples of properties include the user entity's
  * picture property, and the title of nodes.
  */
-class RealisticDummyContentProperty extends RealisticDummyContentAttribute {
-  /**
-   * Change a property, if possible, based on a value found in a list of files.
-   *
-   * Entities have fields (such as field_image) and properties (such as
-   * picture). They are dealt with differently. This function changes a
-   * property.
-   *
-   * @param $files
-   *   An array of file objects where we can fetch replacement content.
-   * @param $property
-   *   The name of the property to change.
-   */
-  function ChangeProperty($files, $property) {
-    $value = $this->ValueFromFile($files);
-    if ($value) {
-      $entity = $this->GetEntity();
-      if (is_array($value) && isset($value['value'])) {
-        $value = $value['value'];
-      }
-      $entity->{$property} = $value;
-      $this->SetEntity($entity);
-    }
+abstract class RealisticDummyContentProperty extends RealisticDummyContentAttribute {
+  function GetType() {
+    return 'property';
   }
-
 }

@@ -15,10 +15,13 @@ files[] = includes/RealisticDummyContentDevelGenerateGenerator.inc
 files[] = includes/RealisticDummyContentGenerator.inc
 files[] = includes/RealisticDummyContentAttribute.inc
 files[] = includes/RealisticDummyContentField.inc
+files[] = includes/RealisticDummyContentValueField.inc
 files[] = includes/RealisticDummyContentProperty.inc
 files[] = includes/realistic_dummy_content/RealisticDummyContentImageField.inc
-files[] = includes/realistic_dummy_content/RealisticDummyContentTaxonomyTermReferenceField.inc
-files[] = includes/realistic_dummy_content/RealisticDummyContentTextWithSummaryField.inc
+files[] = includes/RealisticDummyContentTaxonomyTermReferenceField.inc
+files[] = includes/RealisticDummyContentTextWithSummaryField.inc
+files[] = includes/RealisticDummyContentTextProperty.inc
+files[] = includes/RealisticDummyContentUserPicture.inc
 
 files[] = tests/realistic_dummy_content_api.db.test
 files[] = tests/realistic_dummy_content_api.unit.test

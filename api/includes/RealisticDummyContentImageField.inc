@@ -27,7 +27,7 @@
  */
 class RealisticDummyContentImageField extends RealisticDummyContentField {
   function GetExtensions() {
-    return array('gif', 'png', 'jpg');
+    return $this->GetImageExtensions();
   }
 
   function ValueFromFile($contents, $extension);

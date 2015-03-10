@@ -45,5 +45,5 @@ Continuous integration with Circle CI
 Sponsors
 --------
 
- * [The Linux Foundation](http://www.linuxfoundation.org/) (Current)
+ * [The Linux Foundation](http://www.linuxfoundation.org/) and [Dcycle](http://dcycleproject.org) (Current)
  * [CGI](http://cgi.com/) (Initial development)
