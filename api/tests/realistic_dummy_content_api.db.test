@@ -78,6 +78,13 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
       }
       $filename = $node->field_image[LANGUAGE_NONE][0]['filename'];
       $this->assertTrue(drupal_substr($filename, 0, drupal_strlen('dummyfile')) == 'dummyfile', 'The image file was replaced as expected for node/article/field_image. We know this because the filename starts with the string "dummyfile"');
+      debug($node->field_image[LANGUAGE_NONE][0]);
+      if (TRUE) {
+        $this->assertTrue($node->field_image[LANGUAGE_NONE][0]['alt'] == 'The elephants in the room', 'Alt text has been applied to one image as expected.');
+      }
+      else {
+        $this->assertFalse(isset($node->field_image[LANGUAGE_NONE][0]['alt']) && $node->field_image[LANGUAGE_NONE][0]['alt'] == 'The elephants in the room', 'Alt text only applies to one image.');
+      }
 
       $title = $node->title[0];
       $title_expected = $expected_values['title'][($nid - 1)%3];
@@ -88,6 +95,12 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
       }
       $body = $node->body[LANGUAGE_NONE][0]['value'][0];
       $body_expected = $expected_values['body'][($nid - 1)%3];
+      if ($body_expected == 'I') {
+        $this->assertTrue($node->body[LANGUAGE_NONE][0]['format'] == 'full_html', 'Using full html for node ' . $nid . ' as expected.');
+      }
+      if ($body_expected == 'I') {
+        $this->assertTrue($node->body[LANGUAGE_NONE][0]['format'] == 'filtered_html', 'Using filtered html for node ' . $nid . ' as expected.');
+      }
       $this->assertTrue($title == $title_expected, 'Title first letter (' . $title . ') is as expected (' . $title_expected . ') for this nid (' . $nid . ')');
       $this->assertTrue($body == $body_expected, 'Body first letter (' . $body . ') is as expected (' . $body_expected . ') for this nid (' . $nid . ')');
       $this->assertTag($expected_values['tag'][($nid - 1)%3], $node);

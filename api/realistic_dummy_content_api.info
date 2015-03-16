@@ -16,6 +16,7 @@ files[] = includes/RealisticDummyContentDevelGenerateGenerator.inc
 files[] = includes/RealisticDummyContentGenerator.inc
 files[] = includes/RealisticDummyContentAttribute.inc
 files[] = includes/RealisticDummyContentField.inc
+files[] = includes/RealisticDummyContentFile.inc
 files[] = includes/RealisticDummyContentValueField.inc
 files[] = includes/RealisticDummyContentProperty.inc
 files[] = includes/RealisticDummyContentImageField.inc

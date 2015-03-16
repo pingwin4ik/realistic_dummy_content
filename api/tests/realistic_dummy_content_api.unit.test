@@ -81,4 +81,37 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
     $this->assertTrue($result == $expected, 'Sequential number is as expected for ' . $start . ', ' . $end . ' with hash ' . $hash . ': [expected] ' . $expected . ' = [result] ' . $result);
   }
 
+  /**
+   * Test that file names are properly parsed and combined.
+   */
+  function testFiles() {
+    module_load_include('module', 'realistic_dummy_content_api', 'includes/RealisticDummyContentFile');
+    $data = array(
+      'one.txt',
+      'two.txt',
+      'two.attribute.txt',
+      'two.attribute1.txt',
+      'three.txt',
+      'fo.ur.whatever.test.whatever',
+      'fo.ur.whatever.test2.whatever',
+      'fo.ur.whatever.test2.somethingelse.whatever',
+      'five.txt',
+      'five.value.txt',
+      'six',
+      'six.attribute',
+      'seven.attribute.txt',
+      'seven.attribute1.txt',
+    );
+    $parsed = SortCandidateFiles($data);
+    $this->assertTrue($parsed['one.txt'] == array());
+    $this->assertTrue($parsed['two.txt']['attribute'] = 'two.attribute.txt');
+    $this->assertTrue($parsed['two.txt']['attribute1'] = 'two.attribute1.txt');
+    $this->assertTrue($parsed['three.txt'] == array());
+    $this->assertTrue($parsed['fo.ur.whatever.test.whatever'] == array());
+    $this->assertTrue($parsed['fo.ur.whatever.test2.whatever']['somethingelse'] == 'fo.ur.whatever.test2.somethingelse.whatever');
+    $this->assertTrue($parsed['five.txt']['value'] == 'five.value.txt');
+    $this->assertTrue($parsed['six']['attribute'] == 'six.attribute');
+    $this->assertTrue($parsed['seven.attribute.txt'] == array());
+    $this->assertTrue($parsed['seven.attribute1.txt'] == array());
+  }
 }

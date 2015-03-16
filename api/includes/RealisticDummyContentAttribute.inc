@@ -167,20 +167,12 @@ abstract class RealisticDummyContentAttribute {
    * Get all candidate files for a given field for this entity.
    */
   function GetCandidateFiles() {
-    $candidate_files = array();
+    $files = array();
     foreach (module_list() as $module) {
       $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . '/realistic_dummy_content/fields/' . $this->GetEntityType() . '/' . $this->GetBundle() . '/' . $this->GetName();
-      $candidate_files = array_merge($candidate_files, array_values(file_scan_directory($filepath, '/.*\.(' . implode('|', $this->GetExtensions()) . ')$/')));
+      $files = array_merge($files, RealisticDummyContentFile::GetAll($filepath, $this->GetExtensions()));
     }
-    $files = array();
-    foreach ($candidate_files as $candidate_file) {
-      if ($candidate_file->filename != 'README.txt') {
-        $files[$candidate_file->filename] = $candidate_file;
-      }
-    }
-    // We expect the files to be sorted alphabetically, which is not the case on all systems.
-    ksort($files);
-    return array_values($files);
+    return $files;
   }
 
   /**
