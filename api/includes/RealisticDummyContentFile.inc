@@ -45,7 +45,38 @@
  * is needed, a reasonable fallback value is used, for example `filtered_html` will be
  * used if no format is specified for the body.
  */
-class RealisticDummyContentFile extends RealisticDummyContentAttribute {
+class RealisticDummyContentFile {
+
+  // The file array will look something like this:
+  // array(
+  //   'body.txt' => array(
+  //     'format' => 'body.format.txt',
+  //   ),
+  // );
+  private $file_array;
+
+  /**
+   * Constructor for a file object
+   *
+   * Several actual files can reside in the same file object if their names have
+   * the same radical, for example:
+   *
+   *   a.b.c
+   *   a.c
+   *
+   * have the same radical, a.c.
+   *
+   * @param $file_array
+   * An array in the format:
+   *  array(
+   *   'body.txt' => array(
+   *     'format' => 'body.format.txt',
+   *   ),
+   * );
+   */
+  function __construct($file_array) {
+    $this->file_array = $file_array;
+  }
 
   /**
    * Returns all files with a given extension for a given filepath.
@@ -81,12 +112,15 @@ class RealisticDummyContentFile extends RealisticDummyContentAttribute {
    */
   static function GetAll($filepath, $extensions) {
     try {
-      $candidate_files = file_scan_directory($filepath, '/.*\.(' . implode('|', $this->GetExtensions()) . ')$/');
+      $candidate_files = file_scan_directory($filepath, '/.*\.(' . implode('|', $extensions) . ')$/');
 
-      $files = $this->SortCandidateFiles($candidate_files);
+      $files = self::SortCandidateFiles($candidate_files);
 
-
-      return array_values($files);
+      $return = array();
+      foreach ($files as $file) {
+        $return[] = new RealisticDummyContentFile($file);
+      }
+      return $return;
     }
     catch (Exception $e) {
       return array();
@@ -121,18 +155,102 @@ class RealisticDummyContentFile extends RealisticDummyContentAttribute {
     $files = array();
     // Add all except the README
     foreach ($candidate_files as $candidate_file) {
-      $name = $this->Name($candidate_file);
+      $name = self::Radical($candidate_file);
 
       if (drupal_strtolower(trim($name)) != 'readme') {
         if (!isset($files[$name])) {
           $files[$name] = array();
         }
-        $files[$name][$this->Attribute($candidate_file)] = $candidate_file;
+        $attribute = self::Attribute($candidate_file);
+        if ($attribute) {
+          $files[$name][self::Attribute($candidate_file)] = $candidate_file;
+        }
       }
     }
     // We expect the files to be sorted alphabetically, which is not the case on all
     // systems.
     ksort($files);
+    return $files;
+  }
+
+  /**
+   * Returns the name radical of a filename.
+   *
+   * The following examples will all return "two.txt"
+   *
+   *     two.txt
+   *     two.attribute.txt
+   *     two.attribute1.txt
+   *
+   * If >2 periods are present in the file name, then what is between the
+   * last and next to last period is removed, for example:
+   *
+   *     a.b.c => a.c
+   *     a.b.c.d => a.b.d
+   *     a.b => a.b
+   *     a => a
+   *
+   * @param $filename
+   *   A filename string, for example 'a.b.txt'
+   *
+   * @return
+   *   The name radical of this file, for example a.txt.
+   */
+  static function Radical($filename) {
+    return self::Replace($filename, '\1\3');
+  }
+
+  /**
+   * Returns the attribute of a filename if one exists
+   *
+   * If >2 periods are present in the file name, then what is between the
+   * last and next to last period is kept, for example:
+   *
+   *     a.b.c => b
+   *     a.b.c.d => c
+   *     a.b => NULL
+   *     a => NULL
+   *
+   * @param $filename
+   *   A filename string, for example 'a.b.txt'
+   *
+   * @return
+   *   Null if there is attribute to extract; otherwise the attribute name, for example
+   *   "b".
+   */
+  static function Attribute($filename) {
+    $replaced = self::Replace($filename, '\2');
+    if ($replaced != $filename) {
+      return $replaced;
+    }
+    else {
+      return NULL;
+    }
+  }
+
+  /**
+   * Returns part of a filename
+   *
+   * Helper function which runs a preg replace function on a filename and returns
+   * the result
+   *
+   * @param $filename
+   *   A filename, for example a, a.b, a.b.c, a.b.c.d
+   * @param $replace
+   *   A replacement pattern meant to be passed to preg_replace, where:
+   *   \1 = everything before the next-to-last period
+   *   \2 = everything between the next-to-last and last periods.
+   *   \3 = everything after and including the last period
+   *
+   * @return
+   *   The replaced filename, or the same filename in case of an error or if the
+   *   pattern is not found.
+   *
+   * @throws
+   *   Exception
+   */
+  static function Replace($filename, $replace) {
+    return preg_replace('/(^.*)\.([^\.]*)(\.[^\.]*$)/', $replace, $filename);
   }
 
 }
