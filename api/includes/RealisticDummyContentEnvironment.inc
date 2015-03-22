@@ -101,7 +101,7 @@ abstract class RealisticDummyContentEnvironment {
    *   An empty array in case of an error, or an array of objects of type
    *   RealisticDummyContentFileGroup.
    */
-  static function GetAll($filepath, $extensions) {
+  static function GetAllFileGroups($filepath, $extensions) {
     try {
       $candidate_files = file_scan_directory($filepath, '/.*\.(' . implode('|', $extensions) . ')$/', array('key' => 'filename'));
 
@@ -187,18 +187,18 @@ abstract class RealisticDummyContentEnvironment {
     $return = array();
     // Add all except the README
     foreach ($candidate_files as $candidate_filename => $candidate_file) {
-      $radical = self::Radical($candidate_filename);
+      $radical = self::FilenameRadical($candidate_filename);
 
       if (self::LowercaseRadicalNoExtension($candidate_filename) != 'readme') {
         if (!isset($return[$radical])) {
           $return[$radical] = array();
         }
-        $attribute = self::Attribute($candidate_filename);
+        $attribute = self::AttributeName($candidate_filename);
         if ($attribute) {
           if (!isset($return[$radical]['attributes'])) {
             $return[$radical]['attributes'] = array();
           }
-          $return[$radical]['attributes'][self::Attribute($candidate_filename)] = $candidate_file;
+          $return[$radical]['attributes'][self::AttributeName($candidate_filename)] = $candidate_file;
         }
         else {
           $return[$radical]['file'] = $candidate_file;
@@ -209,6 +209,70 @@ abstract class RealisticDummyContentEnvironment {
     // systems.
     ksort($return);
     return $return;
+  }
+
+  /**
+   * Returns the attribute of a filename if one exists
+   *
+   * If >2 periods are present in the file name, then what is between the
+   * last and next to last period is kept, for example:
+   *
+   *     a.b.c => b
+   *     a.b.c.d => c
+   *     a.b => NULL
+   *     a => NULL
+   *
+   * @param $filename
+   *   A filename string, for example 'a.b.txt'
+   *
+   * @return
+   *   Null if there is attribute to extract; otherwise the attribute name, for example
+   *   "b".
+   *
+   * @throws
+   *   Exception
+   */
+  static function AttributeName($filename) {
+    $replaced = self::Replace($filename, '\2');
+    if ($replaced != $filename) {
+      return $replaced;
+    }
+    else {
+      return NULL;
+    }
+  }
+
+  /**
+   * Returns the name radical of a filename.
+   *
+   * The following examples will all return "two.txt"
+   *
+   *     two.txt
+   *     two.attribute.txt
+   *     two.attribute1.txt
+   *
+   * If >2 periods are present in the file name, then what is between the
+   * last and next to last period is removed, for example:
+   *
+   *     a.b.c => a.c
+   *     a.b.c.d => a.b.d
+   *     a.b => a.b
+   *     a => a
+   *
+   * @param $filename
+   *   A filename string, for example 'a.b.txt'
+   *
+   * @return
+   *   The name radical of this file, for example a.txt.
+   *
+   * @throws
+   *   RealisticDummyContentException
+   */
+  static function FilenameRadical($filename) {
+    if (!is_string($filename)) {
+      throw new RealisticDummyContentException('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
+    }
+    return self::Replace($filename, '\1\3');
   }
 
   /**

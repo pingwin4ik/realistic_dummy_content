@@ -14,7 +14,7 @@ class RealisticDummyContentTextProperty extends RealisticDummyContentProperty {
    * {@inheritdoc}
    */
   function ValueFromFile_($file) {
-    return $file->GetRadicalContents();
+    return $file->Value();
   }
 
 }

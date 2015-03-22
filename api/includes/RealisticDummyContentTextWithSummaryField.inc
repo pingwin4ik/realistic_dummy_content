@@ -15,9 +15,9 @@ class RealisticDummyContentTextWithSummaryField extends RealisticDummyContentFie
    * {@inheritdoc}
    */
   function ValueFromFile_($file) {
-    $value = $file->GetRadicalContents();
+    $value = $file->Value();
     // @TODO use the site's default, not filtered_html, as the default format.
-    $format = $file->GetAttribute('format', 'filtered_html');
+    $format = $file->Attribute('format', 'filtered_html');
     if ($value) {
       return array(
         LANGUAGE_NONE => array(

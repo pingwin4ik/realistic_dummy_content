@@ -14,7 +14,7 @@ class RealisticDummyContentTermReferenceField extends RealisticDummyContentField
    */
   function ValueFromFile_($file) {
     try {
-      $termname = $file->GetRadicalContents();
+      $termname = $file->Value();
       if ($termname) {
         return array(
           LANGUAGE_NONE => array(

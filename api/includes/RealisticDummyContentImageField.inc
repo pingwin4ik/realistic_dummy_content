@@ -21,7 +21,7 @@ class RealisticDummyContentImageField extends RealisticDummyContentField {
    * {@inheritdoc}
    */
   function ValueFromFile_($file) {
-    if (!$file->RadicalFileExistsAndHasContent()) {
+    if (!$file->Value()) {
       return NULL;
     }
     $file = $this->ImageSave($file);

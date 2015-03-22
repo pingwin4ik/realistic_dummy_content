@@ -72,8 +72,9 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
     foreach ($nodes as $nid => $node) {
       // The node should have replaced the image with our own.
       $image_set = isset($node->field_image[LANGUAGE_NONE]);
-      $this->assertTrue($image_set, 'Node image is set. There exists an image for this node.');
+      $this->assertTrue($image_set, 'Node image is set. There exists an image for this node because $node->field_image[LANGUAGE_NONE] is not empty.');
       if (!$image_set) {
+        debug($node);
         continue;
       }
       $filename = $node->field_image[LANGUAGE_NONE][0]['filename'];

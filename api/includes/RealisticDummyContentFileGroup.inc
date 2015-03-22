@@ -71,8 +71,9 @@ class RealisticDummyContentFileGroup {
    * @param $attributes
    *   An array in the format:
    *    array(
-   *     'format' => [file object],
+   *     'attribute_name' => [file object],
    *   ),
+   *   (where attribute_name can be "b" as in the above example.)
    *
    * @throws
    *   RealisticDummyContentException
@@ -90,6 +91,10 @@ class RealisticDummyContentFileGroup {
     $this->radical = $radical;
     $this->file = $file;
     $this->attributes = $attributes;
+  }
+
+  public function GetAttributes() {
+    return $this->attributes;
   }
 
   /**
@@ -125,38 +130,29 @@ class RealisticDummyContentFileGroup {
   }
 
   /**
-   * Return an attribute name if possible
-   *
-   * @return
-   *   $this->attributes.
-   */
-  function Attribute($name) {
-    return $this->attributes;
-  }
-
-  /**
-   * Returns the value of an attribute.
+   * Return the value for an attribute name if possible
    *
    * @param $name
-   *   The name of the attribute, for example, if the file is called a.b.c,
-   *   then the attribute b will contain what is in that file.
+   *   The attribute name to fetch
+   *
+   * @param $default
    *
    * @return
-   *   NULL if a radical file does not exist, or if an error occurred.
+   *   The default value if the attribute does not exist, if it's empty or if an error
+   *   occurred, otherwise the contents of the attributes file.
    */
-  function GetAttribute($name) {
+  function Attribute($name, $default = NULL) {
     try {
       $attributes = $this->GetAttributes();
-      if (isset($attributes[$name])) {
-        $file = $attributes[$name];
-        return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($file->uri));
+      if (isset($attributes[$name]->uri)) {
+        return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($attributes[$name]->uri));
       }
       else {
-        return NULL;
+        return $default;
       }
     }
     catch (Exception $e) {
-      return NULL;
+      return $default;
     }
   }
 
@@ -174,70 +170,6 @@ class RealisticDummyContentFileGroup {
 
   function GetRadical() {
     return $this->radical;
-  }
-
-  /**
-   * Returns the name radical of a filename.
-   *
-   * The following examples will all return "two.txt"
-   *
-   *     two.txt
-   *     two.attribute.txt
-   *     two.attribute1.txt
-   *
-   * If >2 periods are present in the file name, then what is between the
-   * last and next to last period is removed, for example:
-   *
-   *     a.b.c => a.c
-   *     a.b.c.d => a.b.d
-   *     a.b => a.b
-   *     a => a
-   *
-   * @param $filename
-   *   A filename string, for example 'a.b.txt'
-   *
-   * @return
-   *   The name radical of this file, for example a.txt.
-   *
-   * @throws
-   *   RealisticDummyContentException
-   */
-  static function Radical($filename) {
-    if (!is_string($filename)) {
-      throw new RealisticDummyContentException('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
-    }
-    return self::Replace($filename, '\1\3');
-  }
-
-  /**
-   * Returns the attribute of a filename if one exists
-   *
-   * If >2 periods are present in the file name, then what is between the
-   * last and next to last period is kept, for example:
-   *
-   *     a.b.c => b
-   *     a.b.c.d => c
-   *     a.b => NULL
-   *     a => NULL
-   *
-   * @param $filename
-   *   A filename string, for example 'a.b.txt'
-   *
-   * @return
-   *   Null if there is attribute to extract; otherwise the attribute name, for example
-   *   "b".
-   *
-   * @throws
-   *   Exception
-   */
-  static function Attribute($filename) {
-    $replaced = self::Replace($filename, '\2');
-    if ($replaced != $filename) {
-      return $replaced;
-    }
-    else {
-      return NULL;
-    }
   }
 
 }

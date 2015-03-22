@@ -170,7 +170,7 @@ abstract class RealisticDummyContentAttribute {
     $files = array();
     foreach (module_list() as $module) {
       $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . '/realistic_dummy_content/fields/' . $this->GetEntityType() . '/' . $this->GetBundle() . '/' . $this->GetName();
-      $files = array_merge($files, RealisticDummyContentFileGroup::GetAll($filepath, $this->GetExtensions()));
+      $files = array_merge($files, RealisticDummyContentEnvironment::GetAllFileGroups($filepath, $this->GetExtensions()));
     }
     return $files;
   }
@@ -276,7 +276,7 @@ abstract class RealisticDummyContentAttribute {
    */
   function ImageSave($file) {
     try {
-      $exists = $file->RadicalFileExistsAndHasContent();
+      $exists = $file->Value();
       if (!$exists) {
         throw new RealisticDummyContentException('Please check if the file exists before attempting to save it');
       }
@@ -308,13 +308,13 @@ abstract class RealisticDummyContentAttribute {
    *   Exception.
    */
   function FileSave($file) {
-    $exists = $file->RadicalFileExistsAndHasContent();
+    $exists = $file->Value();
     if (!$exists) {
       throw new RealisticDummyContentException('Please check if the file exists before attempting to save it');
     }
     $uri = $file->RadicalUri();
     $random = md5($uri) . rand(1000000000, 9999999999);
-    $drupal_file = $this->env()->file_save_data($file->GetRadicalContents(), 'public://dummyfile' . $random . '.' . $file->GetExtension());
+    $drupal_file = $this->env()->file_save_data($file->Value(), 'public://dummyfile' . $random . '.' . $file->GetExtension());
     $drupal_file->uid = $this->GetUid();
     $return = file_save($drupal_file);
     return $return;

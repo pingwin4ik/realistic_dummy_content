@@ -15,7 +15,7 @@ class RealisticDummyContentValueField extends RealisticDummyContentField {
    * {@inheritdoc}
    */
   function ValueFromFile_($file) {
-    $value = $file->GetRadicalContents();
+    $value = $file->Value();
     if ($value) {
       return array(
         LANGUAGE_NONE => array(
