@@ -85,33 +85,43 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
    * Test that file names are properly parsed and combined.
    */
   function testFiles() {
-    module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentFile');
+    module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentFileGroup');
     $data = array(
-      'one.txt',
-      'two.txt',
-      'two.attribute.txt',
-      'two.attribute1.txt',
-      'three.txt',
-      'fo.ur.whatever.test.whatever',
-      'fo.ur.whatever.test2.whatever',
-      'fo.ur.whatever.test2.somethingelse.whatever',
-      'five.txt',
-      'five.value.txt',
-      'six',
-      'six.attribute',
-      'seven.attribute.txt',
-      'seven.attribute1.txt',
+      'one.txt' => new stdClass(),
+      'reAdme.txt' => new stdClass(),
+      'README.md' => new stdClass(),
+      'readme.jpg' => new stdClass(),
+      'two.txt' => new stdClass(),
+      'two.attribute.txt' => new stdClass(),
+      'two.attribute1.txt' => new stdClass(),
+      'three.txt' => new stdClass(),
+      'fo.ur.whatever.test.whatever' => new stdClass(),
+      'fo.ur.whatever.test2.whatever' => new stdClass(),
+      'fo.ur.whatever.test2.somethingelse.whatever' => new stdClass(),
+      'five.txt' => new stdClass(),
+      'five.value.txt' => new stdClass(),
+      'six' => new stdClass(),
+      'six.attribute' => new stdClass(),
+      'seven.attribute.txt' => new stdClass(),
+      'seven.attribute1.txt' => new stdClass(),
     );
-    $parsed = RealisticDummyContentFile::SortCandidateFiles($data);
-    $this->assertTrue($parsed['one.txt'] == array());
-    $this->assertTrue($parsed['two.txt']['attribute'] = 'two.attribute.txt');
-    $this->assertTrue($parsed['two.txt']['attribute1'] = 'two.attribute1.txt');
-    $this->assertTrue($parsed['three.txt'] == array());
-    $this->assertTrue($parsed['fo.ur.whatever.whatever']['test'] == 'fo.ur.whatever.test.whatever');
-    $this->assertTrue($parsed['fo.ur.whatever.test2.whatever']['somethingelse'] == 'fo.ur.whatever.test2.somethingelse.whatever');
-    $this->assertTrue($parsed['five.txt']['value'] == 'five.value.txt');
-    $this->assertTrue($parsed['six.attribute'] == array());
-    $this->assertTrue($parsed['seven.txt']['attribute'] == 'seven.attribute.txt');
-    $this->assertTrue($parsed['seven.txt']['attribute1'] == 'seven.attribute1.txt');
+    try {
+      $parsed = RealisticDummyContentFileGroup::SortCandidateFiles($data);
+    }
+    catch (Exception $e) {
+      $this->assertFalse(TRUE, 'Got exception ' . $e->getMessage());
+    }
+    $this->assertTrue(count($parsed) == 9, '9 parsed files are returned, which excludes the readme riles (9 == ' . count($parsed) . ')');
+    $this->assertTrue(is_object($parsed['one.txt']['file']));
+    $this->assertTrue(is_object($parsed['two.txt']['attributes']['attribute']));
+    $this->assertTrue(is_object($parsed['two.txt']['attributes']['attribute1']));
+    $this->assertTrue(is_object($parsed['three.txt']['file']));
+    $this->assertTrue(is_object($parsed['fo.ur.whatever.whatever']['attributes']['test']));
+    $this->assertTrue(is_object($parsed['fo.ur.whatever.test2.whatever']['attributes']['somethingelse']));
+    $this->assertTrue(is_object($parsed['five.txt']['attributes']['value']));
+    $this->assertTrue(is_object($parsed['six.attribute']['file']));
+    $this->assertTrue(is_object($parsed['six']['file']));
+    $this->assertTrue(is_object($parsed['seven.txt']['attributes']['attribute']));
+    $this->assertTrue(is_object($parsed['seven.txt']['attributes']['attribute1']));
   }
 }

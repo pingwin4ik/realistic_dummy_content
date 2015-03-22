@@ -1,0 +1,274 @@
+<?php
+
+/**
+ * @file
+ *
+ * Define RealisticDummyContentLiveEnvironment autoload class.
+ */
+
+/**
+ * The abstract base environment.
+ *
+ * During normal execution, we want to do things like interact with the file-
+ * system and such. However during testing we want to abstract that away. This
+ * class defines abstract functions representing what the environment should
+ * do.
+ */
+abstract class RealisticDummyContentEnvironment {
+  static private $env;
+  static function Get() {
+    if (!self::$env) {
+      self::$env = new RealisticDummyContentLiveEnvironment;
+    }
+    return self::$env;
+  }
+  static function Set($environment) {
+    self::$env = $environment;
+  }
+
+  /**
+   * Get the contents of a file.
+   *
+   * @param $filename
+   *   A valid filename, for example /drupal/root/sites/all/modules/your_module/realistic_dummy_content/fields/node/blog/body/03.txt
+   *
+   * @throws
+   *   Exception
+   */
+  function file_get_contents($filename) {
+    if (!$filename) {
+      throw new Exception('Please make sure you call ' . __CLASS__ . '::' . __FUNCTION__ . '() with a valid filename');
+    }
+    $return = $this->_file_get_contents_($filename);
+    return $return;
+  }
+
+  /**
+   * Internal function used to get the contents of a file.
+   *
+   * Wrapper around PHP's file_get_contents() (or a simulation thereof).
+   * This function will not return an exception. Please use RealisticDummyContentEnvironment::
+   * file_get_contents(), instead.
+   *
+   * @param $filename
+   *   A valid filename, for example /drupal/root/sites/all/modules/your_module/realistic_dummy_content/fields/node/blog/body/03.txt
+   *
+   * @return
+   *   Undefined in case the filename is invalid; otherwise returns the contents of the
+   *   file.
+   */
+  abstract function _file_get_contents_($filename);
+
+  function file_save_data($data, $destination = NULL) {
+    $return = $this->_file_save_data_($data, $destination);
+    return $return;
+  }
+  abstract function _file_save_data_($data, $destination = NULL);
+  function file_save(stdClass $file) {
+    $return = $this->_file_save_($file);
+    return $return;
+  }
+  abstract function _file_save_(stdClass $file);
+
+  /**
+   * Returns all files with a given extension for a given filepath.
+   *
+   * Files do not always have a one-to-one relationship with the filesystem.
+   * For example:
+   *
+   *     1.txt
+   *     2.txt
+   *     3.txt
+   *
+   * will be represented as three files, but
+   *
+   *     1.txt
+   *     2.txt
+   *     2.attribute.txt
+   *     2.attribute1.txt
+   *     3.txt
+   *
+   * will also be represented as three files, but the second one will have two
+   * attributes, attribute and attribute1.
+   *
+   * @param $filepath
+   *   An absolute filepath on the system, for example /path/to/drupal/sites/all/
+   *   modules/mymodule/realistic_dummy_content/fields/node/article/body
+   * @param $extensions
+   *   An array of extensions which should be taken into consideration.
+   *
+   * @return
+   *   An empty array in case of an error, or an array of objects of type
+   *   RealisticDummyContentFileGroup.
+   */
+  static function GetAll($filepath, $extensions) {
+    try {
+      $candidate_files = file_scan_directory($filepath, '/.*\.(' . implode('|', $extensions) . ')$/', array('key' => 'filename'));
+
+      $files = self::SortCandidateFiles($candidate_files);
+
+      $return = array();
+      foreach ($files as $radical => $attributes) {
+
+        $return[] = new RealisticDummyContentFileGroup($radical, isset($attributes['file']) ? $attributes['file'] : NULL, isset($attributes['attributes']) ? $attributes['attributes'] : array());
+      }
+      return $return;
+    }
+    catch (Exception $e) {
+      return array();
+    }
+  }
+
+  /**
+   * Given a list of candidate files, sort them by names and parts.
+   *
+   * @param $candidate_files
+   *   An array keyed by filename which contains drupal file objects, like this:
+   *
+   *     'one.txt' => [file object]
+   *     'two.attribute.txt' => [file object]
+   *     'two.attribute1.txt' => [file object]
+   *     'three.txt' => [file object]
+   *
+   * @return
+   *   A sorted array which looks like:
+   *
+   *     one.txt => array('file' => [file object]),
+   *     two.txt = array(
+   *       attributes => array(
+   *         'attribute' => [file object],
+   *         'attribute1' => [file object],
+   *       )
+   *     ),
+   *     three.txt => array('file' => [file object]),
+   *
+   * @throws
+   *   RealisticDummyContentException
+   */
+  static function SortCandidateFiles($candidate_files) {
+    foreach ($candidate_files as $candidate_filename => $candidate_file) {
+      if (!is_string($candidate_filename)) {
+        // Explicitly load the Exception class, because during unit tests the
+        // registry is not present.
+        module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentException');
+        throw new RealisticDummyContentException('array keys should be strings');
+      }
+      if (!is_object($candidate_file)) {
+        // Explicitly load the Exception class, because during unit tests the
+        // registry is not present.
+        module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentException');
+        throw new RealisticDummyContentException('array values should be file objects');
+      }
+      if (strpos($candidate_filename, '/') !== FALSE) {
+        // Explicitly load the Exception class, because during unit tests the
+        // registry is not present.
+        module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentException');
+        throw new RealisticDummyContentException('Please do not pass file paths with slashes (/) to ' . __FUNCTION__);
+      }
+    }
+    $return = self::SortCandidateFiles_($candidate_files);
+    return $return;
+  }
+
+  /**
+   * Given a list of candidate files, sort them by names and parts.
+   *
+   * @param $candidate_files
+   *   An array keyed by filename which contains drupal file objects. See
+   *   SortCandidateFiles().
+   *
+   * @return
+   *   A sorted array. See SortCandidateFiles().
+   *
+   * @throws
+   *   Exception
+   */
+  static function SortCandidateFiles_($candidate_files) {
+    $return = array();
+    // Add all except the README
+    foreach ($candidate_files as $candidate_filename => $candidate_file) {
+      $radical = self::Radical($candidate_filename);
+
+      if (self::LowercaseRadicalNoExtension($candidate_filename) != 'readme') {
+        if (!isset($return[$radical])) {
+          $return[$radical] = array();
+        }
+        $attribute = self::Attribute($candidate_filename);
+        if ($attribute) {
+          if (!isset($return[$radical]['attributes'])) {
+            $return[$radical]['attributes'] = array();
+          }
+          $return[$radical]['attributes'][self::Attribute($candidate_filename)] = $candidate_file;
+        }
+        else {
+          $return[$radical]['file'] = $candidate_file;
+        }
+      }
+    }
+    // We expect the files to be sorted alphabetically, which is not the case on all
+    // systems.
+    ksort($return);
+    return $return;
+  }
+
+  /**
+   * Returns the part of a string before the extension, in lowercase
+   *
+   * @param $filename
+   *   A filename string, e.g. rEadmE.txt
+   *
+   * @return
+   *   The lowercase radical without the extension, e.g. readme
+   */
+  static function LowercaseRadicalNoExtension($filename) {
+    return drupal_strtolower(trim(preg_replace('/\.[^\.]*$/', '', $filename)));
+  }
+
+  /**
+   * Returns part of a filename
+   *
+   * Helper function which runs a preg replace function on a filename and returns
+   * the result
+   *
+   * @param $filename
+   *   A filename, for example a, a.b, a.b.c, a.b.c.d
+   * @param $replace
+   *   A replacement pattern meant to be passed to preg_replace, where:
+   *   \1 = everything before the next-to-last period
+   *   \2 = everything between the next-to-last and last periods.
+   *   \3 = everything after and including the last period
+   *
+   * @return
+   *   The replaced filename, or the same filename in case of an error or if the
+   *   pattern is not found.
+   *
+   * @throws
+   *   RealisticDummyContentException
+   */
+  static function Replace($filename, $replace) {
+    if (!is_string($filename)) {
+      throw new RealisticDummyContentException('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
+    }
+    return preg_replace('/(^.*)\.([^\.]*)(\.[^\.]*$)/', $replace, $filename);
+  }
+
+  /**
+   * Returns the trimmed contents of a Drpual file object, or NULL if empty.
+   *
+   * @param $file
+   *   A drupal file object
+   *
+   * @return
+   *   NULL if no contents in file, or if an error occurred; otherwise a string with the
+   *   trimmed contents of the file.
+   */
+  static function GetFileContents($file) {
+    try {
+      return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($file));
+    }
+    catch (Exception $e) {
+      return NULL;
+    }
+  }
+
+}
