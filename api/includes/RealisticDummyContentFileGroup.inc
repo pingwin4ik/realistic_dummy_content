@@ -93,6 +93,23 @@ class RealisticDummyContentFileGroup {
     $this->attributes = $attributes;
   }
 
+  /**
+   * Getter for radical.
+   */
+  public function GetRadical() {
+    return $this->radical;
+  }
+
+  /**
+   * Getter for file.
+   */
+  public function GetFile() {
+    return $this->file;
+  }
+
+  /**
+   * Getter for attributes.
+   */
   public function GetAttributes() {
     return $this->attributes;
   }
@@ -106,9 +123,9 @@ class RealisticDummyContentFileGroup {
    */
   function Value() {
     try {
-      $radical = $this->GetRadical();
-      if (isset($radical->uri)) {
-        return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($radical->uri));
+      $file = $this->GetFile();
+      if (isset($file->uri)) {
+        return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($file->uri));
       }
       else {
         return NULL;
@@ -116,16 +133,6 @@ class RealisticDummyContentFileGroup {
     }
     catch (Exception $e) {
       return NULL;
-    }
-  }
-
-  function File() {
-    $radical = $this->GetRadical();
-    if (!$radical) {
-      return FALSE;
-    }
-    else {
-      return self::GetFileContents($radical);
     }
   }
 
@@ -144,6 +151,7 @@ class RealisticDummyContentFileGroup {
   function Attribute($name, $default = NULL) {
     try {
       $attributes = $this->GetAttributes();
+      debug($attributes);
       if (isset($attributes[$name]->uri)) {
         return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($attributes[$name]->uri));
       }
@@ -165,11 +173,10 @@ class RealisticDummyContentFileGroup {
   function GetRadicalExtension() {
     $filename = $this->GetRadical();
     $extension = pathinfo($filename, PATHINFO_EXTENSION);
+    if (!$extension) {
+      throw new RealisticDummyContentException('Files require extensions.');
+    }
     return $extension;
-  }
-
-  function GetRadical() {
-    return $this->radical;
   }
 
 }

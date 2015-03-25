@@ -283,7 +283,7 @@ abstract class RealisticDummyContentAttribute {
       $return = NULL;
       if (in_array($file->GetRadicalExtension(), $this->GetImageExtensions())) {
         $return = $this->FileSave($file);
-        $alt = $file->GetAttribute('alt');
+        $alt = $file->Attribute('alt');
         if ($alt) {
           $return->alt = $alt;
         }
@@ -308,13 +308,13 @@ abstract class RealisticDummyContentAttribute {
    *   Exception.
    */
   function FileSave($file) {
-    $exists = $file->Value();
-    if (!$exists) {
+    $drupal_file = $file->GetFile();
+    if (!$drupal_file) {
       throw new RealisticDummyContentException('Please check if the file exists before attempting to save it');
     }
-    $uri = $file->RadicalUri();
+    $uri = $drupal_file->uri;
     $random = md5($uri) . rand(1000000000, 9999999999);
-    $drupal_file = $this->env()->file_save_data($file->Value(), 'public://dummyfile' . $random . '.' . $file->GetExtension());
+    $drupal_file = $this->env()->file_save_data($file->Value(), 'public://dummyfile' . $random . '.' . $file->GetRadicalExtension());
     $drupal_file->uid = $this->GetUid();
     $return = file_save($drupal_file);
     return $return;

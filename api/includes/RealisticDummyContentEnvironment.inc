@@ -37,7 +37,10 @@ abstract class RealisticDummyContentEnvironment {
    */
   function file_get_contents($filename) {
     if (!$filename) {
-      throw new Exception('Please make sure you call ' . __CLASS__ . '::' . __FUNCTION__ . '() with a valid filename');
+      throw new RealisticDummyContentException('Please use valid filename');
+    }
+    if (strpos($filename, '/') === FALSE) {
+      throw new RealisticDummyContentException('Please use an absolute filename including its path, which must always contain at least one slash. You are using ' . $filename);
     }
     $return = $this->_file_get_contents_($filename);
     return $return;
@@ -188,10 +191,11 @@ abstract class RealisticDummyContentEnvironment {
     // Add all except the README
     foreach ($candidate_files as $candidate_filename => $candidate_file) {
       $radical = self::FilenameRadical($candidate_filename);
+      $no_extension = self::LowercaseRadicalNoExtension($candidate_filename);
 
-      if (self::LowercaseRadicalNoExtension($candidate_filename) != 'readme') {
+      if ($no_extension != 'readme') {
         if (!isset($return[$radical])) {
-          $return[$radical] = array();
+          $return[$no_extension] = array();
         }
         $attribute = self::AttributeName($candidate_filename);
         if ($attribute) {
@@ -328,7 +332,10 @@ abstract class RealisticDummyContentEnvironment {
    */
   static function GetFileContents($file) {
     try {
-      return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($file));
+      if (!is_object($file)) {
+        throw new RealisticDummyContentException('Please use a file object');
+      }
+      return trim(self::Get()->file_get_contents($file->uri));
     }
     catch (Exception $e) {
       return NULL;

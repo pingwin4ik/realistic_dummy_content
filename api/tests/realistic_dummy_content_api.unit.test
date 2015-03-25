@@ -85,7 +85,7 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
    * Test that file names are properly parsed and combined.
    */
   function testFiles() {
-    module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentFileGroup');
+    module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentEnvironment');
     $data = array(
       'one.txt' => new stdClass(),
       'reAdme.txt' => new stdClass(),
@@ -97,31 +97,36 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
       'three.txt' => new stdClass(),
       'fo.ur.whatever.test.whatever' => new stdClass(),
       'fo.ur.whatever.test2.whatever' => new stdClass(),
-      'fo.ur.whatever.test2.somethingelse.whatever' => new stdClass(),
+      'fo.ur.whatever.test2.somethingelse.txt' => new stdClass(),
       'five.txt' => new stdClass(),
       'five.value.txt' => new stdClass(),
       'six' => new stdClass(),
       'six.attribute' => new stdClass(),
       'seven.attribute.txt' => new stdClass(),
       'seven.attribute1.txt' => new stdClass(),
+      'eight.png' => new stdClass(),
+      'eight.alt.txt' => new stdClass(),
     );
     try {
-      $parsed = RealisticDummyContentFileGroup::SortCandidateFiles($data);
+      $parsed = RealisticDummyContentEnvironment::SortCandidateFiles($data);
     }
     catch (Exception $e) {
       $this->assertFalse(TRUE, 'Got exception ' . $e->getMessage());
     }
+    debug($parsed);
     $this->assertTrue(count($parsed) == 9, '9 parsed files are returned, which excludes the readme riles (9 == ' . count($parsed) . ')');
-    $this->assertTrue(is_object($parsed['one.txt']['file']));
-    $this->assertTrue(is_object($parsed['two.txt']['attributes']['attribute']));
-    $this->assertTrue(is_object($parsed['two.txt']['attributes']['attribute1']));
-    $this->assertTrue(is_object($parsed['three.txt']['file']));
-    $this->assertTrue(is_object($parsed['fo.ur.whatever.whatever']['attributes']['test']));
-    $this->assertTrue(is_object($parsed['fo.ur.whatever.test2.whatever']['attributes']['somethingelse']));
-    $this->assertTrue(is_object($parsed['five.txt']['attributes']['value']));
-    $this->assertTrue(is_object($parsed['six.attribute']['file']));
+    $this->assertTrue(is_object($parsed['one']['file']));
+    $this->assertTrue(is_object($parsed['two']['attributes']['attribute']));
+    $this->assertTrue(is_object($parsed['two']['attributes']['attribute1']));
+    $this->assertTrue(is_object($parsed['three']['file']));
+    $this->assertTrue(is_object($parsed['fo.ur.whatever']['attributes']['test']));
+    $this->assertTrue(is_object($parsed['fo.ur.whatever.test2']['attributes']['somethingelse']));
+    $this->assertTrue(is_object($parsed['five']['attributes']['value']));
     $this->assertTrue(is_object($parsed['six']['file']));
-    $this->assertTrue(is_object($parsed['seven.txt']['attributes']['attribute']));
-    $this->assertTrue(is_object($parsed['seven.txt']['attributes']['attribute1']));
+    $this->assertTrue(is_object($parsed['six']['attributes']['attributes']));
+    $this->assertTrue(is_object($parsed['seven']['attributes']['attribute']));
+    $this->assertTrue(is_object($parsed['seven']['attributes']['attribute1']));
+    $this->assertTrue(is_object($parsed['eight']['file']));
+    $this->assertTrue(is_object($parsed['eight']['attributes']['alt']));
   }
 }

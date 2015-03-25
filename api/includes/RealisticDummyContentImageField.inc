@@ -24,14 +24,16 @@ class RealisticDummyContentImageField extends RealisticDummyContentField {
     if (!$file->Value()) {
       return NULL;
     }
+    $return = NULL;
     $file = $this->ImageSave($file);
     if ($file) {
-      return array(
+      $return = array(
         LANGUAGE_NONE => array(
           (array)$file,
         ),
       );
     }
+    return $return;
   }
 
 }
