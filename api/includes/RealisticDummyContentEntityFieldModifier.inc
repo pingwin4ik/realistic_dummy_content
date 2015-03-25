@@ -43,7 +43,7 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
     $modifiable_properties = array();
     $fields = $this->GetFields();
     foreach ((array)$this->GetEntity() as $property => $info) {
-      if (!in_array($property, $fields) && $this->filter($property)) {
+      if (!in_array($property, array_keys($fields)) && $this->filter($property)) {
         $this->AddModifier($modifiable_properties, 'property', $property);
       }
     }
@@ -131,7 +131,9 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
     }
 
     if (isset($modifier)) {
-      $modifiers[] = $modifier;
+      // It's OK to index by name because attributes and fields can never have
+      // the same names.
+      $modifiers[$name] = $modifier;
     }
   }
 
