@@ -188,31 +188,34 @@ abstract class RealisticDummyContentEnvironment {
    */
   static function SortCandidateFiles_($candidate_files) {
     $return = array();
-    // Add all except the README
     foreach ($candidate_files as $candidate_filename => $candidate_file) {
-      $radical = self::FilenameRadical($candidate_filename);
-      $no_extension = self::LowercaseRadicalNoExtension($candidate_filename);
-
-      if ($no_extension != 'readme') {
-        if (!isset($return[$radical])) {
-          $return[$no_extension] = array();
-        }
-        $attribute = self::AttributeName($candidate_filename);
-        if ($attribute) {
-          if (!isset($return[$radical]['attributes'])) {
-            $return[$radical]['attributes'] = array();
-          }
-          $return[$radical]['attributes'][self::AttributeName($candidate_filename)] = $candidate_file;
-        }
-        else {
-          $return[$radical]['file'] = $candidate_file;
-        }
+      if (self::validCandidateFilename($candidate_filename)) {
+        self::addFileToArray($return, $candidate_filename, $candidate_file);
       }
     }
     // We expect the files to be sorted alphabetically, which is not the case on all
     // systems.
     ksort($return);
     return $return;
+  }
+
+  static function validCandidateFilename($name) {
+    return self::LowercaseRadicalNoExtension($name) != 'readme';
+  }
+
+  static function addFileToArray(&$array, $name, $file) {
+    $parts = explode('.', $name);
+    if (count($parts) >= 4) {
+      $attribute_extention = array_pop($parts);
+      $attribute_name = array_pop($parts);
+    }
+    $base = implode('.', $parts);
+    if (isset($attribute_name)) {
+      $array[$base]['attributes'][$attribute_name] = $file;
+    }
+    else {
+      $array[$base]['file'] = $file;
+    }
   }
 
   /**

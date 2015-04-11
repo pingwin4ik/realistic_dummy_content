@@ -151,7 +151,6 @@ class RealisticDummyContentFileGroup {
   function Attribute($name, $default = NULL) {
     try {
       $attributes = $this->GetAttributes();
-      debug($attributes);
       if (isset($attributes[$name]->uri)) {
         return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($attributes[$name]->uri));
       }
