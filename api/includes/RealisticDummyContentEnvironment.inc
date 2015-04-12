@@ -106,7 +106,7 @@ abstract class RealisticDummyContentEnvironment {
    */
   static function GetAllFileGroups($filepath, $extensions) {
     try {
-      $candidate_files = file_scan_directory($filepath, '.*', array('key' => 'filename'));
+      $candidate_files = file_scan_directory($filepath, '/.*$/', array('key' => 'filename'));
 
       $files = self::SortCandidateFiles($candidate_files, $extensions);
 
