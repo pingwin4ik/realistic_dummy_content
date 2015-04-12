@@ -87,8 +87,8 @@ abstract class RealisticDummyContentEnvironment {
    *
    *     1.txt
    *     2.txt
-   *     2.attribute.txt
-   *     2.attribute1.txt
+   *     2.txt.attribute.txt
+   *     2.txt.attribute1.txt
    *     3.txt
    *
    * will also be represented as three files, but the second one will have two
@@ -106,9 +106,9 @@ abstract class RealisticDummyContentEnvironment {
    */
   static function GetAllFileGroups($filepath, $extensions) {
     try {
-      $candidate_files = file_scan_directory($filepath, '/.*\.(' . implode('|', $extensions) . ')$/', array('key' => 'filename'));
+      $candidate_files = file_scan_directory($filepath, '.*', array('key' => 'filename'));
 
-      $files = self::SortCandidateFiles($candidate_files);
+      $files = self::SortCandidateFiles($candidate_files, $extensions);
 
       $return = array();
       foreach ($files as $radical => $attributes) {
@@ -129,9 +129,24 @@ abstract class RealisticDummyContentEnvironment {
    *   An array keyed by filename which contains drupal file objects, like this:
    *
    *     'one.txt' => [file object]
-   *     'two.attribute.txt' => [file object]
-   *     'two.attribute1.txt' => [file object]
+   *     'two.txt.attribute.txt' => [file object]
+   *     'two.txt.attribute1.txt' => [file object]
    *     'three.txt' => [file object]
+   *
+   * @param $extensions = NULL
+   *   If set, only return file groups whose base file is in one of the extenstions.
+   *   For example, given an extension jpg,png, and a file structure with
+   *
+   *      a.jpg
+   *      a.jpg.alt.txt
+   *      b.txt
+   *
+   *   This function will return:
+   *
+   *      a.jpg =>
+   *        file => [a.jpg]
+   *        attributes =>
+   *          alt => [a.jpg.alt.txt]
    *
    * @return
    *   A sorted array which looks like:
@@ -148,7 +163,7 @@ abstract class RealisticDummyContentEnvironment {
    * @throws
    *   RealisticDummyContentException
    */
-  static function SortCandidateFiles($candidate_files) {
+  static function SortCandidateFiles($candidate_files, $extensions = NULL) {
     foreach ($candidate_files as $candidate_filename => $candidate_file) {
       if (!is_string($candidate_filename)) {
         // Explicitly load the Exception class, because during unit tests the
@@ -169,7 +184,7 @@ abstract class RealisticDummyContentEnvironment {
         throw new RealisticDummyContentException('Please do not pass file paths with slashes (/) to ' . __FUNCTION__);
       }
     }
-    $return = self::SortCandidateFiles_($candidate_files);
+    $return = self::SortCandidateFiles_($candidate_files, $extensions);
     return $return;
   }
 
@@ -179,6 +194,8 @@ abstract class RealisticDummyContentEnvironment {
    * @param $candidate_files
    *   An array keyed by filename which contains drupal file objects. See
    *   SortCandidateFiles().
+   * @param $extensions = NULL
+   *   If set, extensions to filter by. See SortCandidateFiles().
    *
    * @return
    *   A sorted array. See SortCandidateFiles().
@@ -186,10 +203,10 @@ abstract class RealisticDummyContentEnvironment {
    * @throws
    *   Exception
    */
-  static function SortCandidateFiles_($candidate_files) {
+  static function SortCandidateFiles_($candidate_files, $extensions = NULL) {
     $return = array();
     foreach ($candidate_files as $candidate_filename => $candidate_file) {
-      if (self::validCandidateFilename($candidate_filename)) {
+      if (self::validCandidateFilename($candidate_filename, $extensions)) {
         self::addFileToArray($return, $candidate_filename, $candidate_file);
       }
     }
@@ -199,22 +216,39 @@ abstract class RealisticDummyContentEnvironment {
     return $return;
   }
 
-  static function validCandidateFilename($name) {
-    return self::LowercaseRadicalNoExtension($name) != 'readme';
+  static function validCandidateFilename($name, $extensions = NULL) {
+    if (self::LowercaseRadicalNoExtension($name) == 'readme') {
+      return FALSE;
+    }
+    if (!$extensions) {
+      return TRUE;
+    }
+    $filparts = self::getFileParts($name);
+    return in_array($filparts['base_extension'], $extensions);
+  }
+
+  static function getFileParts($name) {
+    $return = array();
+    $parts = explode('.', $name);
+    if (count($parts) >= 4) {
+      $return['attribute_extention'] = array_pop($parts);
+      $return['attribute_name'] = array_pop($parts);
+    }
+    $return['base'] = implode('.', $parts);
+    $return['base_extension'] = array_pop($parts);
+    return $return;
   }
 
   static function addFileToArray(&$array, $name, $file) {
-    $parts = explode('.', $name);
-    if (count($parts) >= 4) {
-      $attribute_extention = array_pop($parts);
-      $attribute_name = array_pop($parts);
-    }
-    $base = implode('.', $parts);
-    if (isset($attribute_name)) {
-      $array[$base]['attributes'][$attribute_name] = $file;
+    $attribute_name = NULL;
+    $attribute_extention = NULL;
+
+    $fileinfo = self::getFileParts($name);
+    if (isset($fileinfo['attribute_name'])) {
+      $array[$fileinfo['base']]['attributes'][$fileinfo['attribute_name']] = $file;
     }
     else {
-      $array[$base]['file'] = $file;
+      $array[$fileinfo['base']]['file'] = $file;
     }
   }
 
@@ -255,8 +289,8 @@ abstract class RealisticDummyContentEnvironment {
    * The following examples will all return "two.txt"
    *
    *     two.txt
-   *     two.attribute.txt
-   *     two.attribute1.txt
+   *     two.txt.attribute.txt
+   *     two.txt.attribute1.txt
    *
    * If >2 periods are present in the file name, then what is between the
    * last and next to last period is removed, for example:

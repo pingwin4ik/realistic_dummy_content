@@ -93,13 +93,14 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
       'readme.jpg' => new stdClass(),
       'two.txt' => new stdClass(),
       'two.notanattribute.txt' => new stdClass(),
-      'two.txt.attribute.txt' => new stdClass(), // >1 dot: attribute
-      'two.txt.attribute1.txt' => new stdClass(), // >1 dot: attribute
-      'three.png' => new stdClass(), // <=1 dot
-      'three.png.alt.txt' => new stdClass(), // >1 dot: attribute
+      'two.txt.attribute.txt' => new stdClass(),
+      'two.txt.attribute1.txt' => new stdClass(),
+      'three.png' => new stdClass(),
+      'three.png.alt.txt' => new stdClass(),
     );
     try {
       $parsed = RealisticDummyContentEnvironment::SortCandidateFiles($data);
+      $parsed_images = RealisticDummyContentEnvironment::SortCandidateFiles($data, array('png'));
     }
     catch (Exception $e) {
       $this->assertFalse(TRUE, 'Got exception ' . $e->getMessage());
@@ -111,6 +112,9 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
     $this->assertTrue(is_object($parsed['two.txt']['attributes']['attribute1']));
     $this->assertTrue(is_object($parsed['three.png']['file']));
     $this->assertTrue(is_object($parsed['three.png']['attributes']['alt']));
+    $this->assertFalse(isset($parsed_images['two.txt']['attributes']['attribute1']));
+    $this->assertTrue(is_object($parsed_images['three.png']['file']));
+    $this->assertTrue(is_object($parsed_images['three.png']['attributes']['alt']));
     $this->assertTrue(is_object($parsed['two.notanattribute.txt']['file']));
   }
 }
