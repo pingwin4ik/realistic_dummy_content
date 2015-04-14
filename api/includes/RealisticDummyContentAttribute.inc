@@ -313,7 +313,9 @@ abstract class RealisticDummyContentAttribute {
       throw new RealisticDummyContentException('Please check if the file exists before attempting to save it');
     }
     $uri = $drupal_file->uri;
-    $random = md5($uri) . rand(1000000000, 9999999999);
+    //$random = md5($uri) . rand(1000000000, 9999999999);
+    // DO NOT RENAME FOR TESTING
+    $random = $file->GetRadical();
     $drupal_file = $this->env()->file_save_data($file->Value(), 'public://dummyfile' . $random . '.' . $file->GetRadicalExtension());
     $drupal_file->uid = $this->GetUid();
     $return = file_save($drupal_file);

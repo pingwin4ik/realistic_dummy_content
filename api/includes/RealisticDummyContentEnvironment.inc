@@ -15,13 +15,38 @@
  * do.
  */
 abstract class RealisticDummyContentEnvironment {
+  // Private variable containing the environment to use. Calls are made directly
+  // to RealisticDummyContentEnvironment's static methods, which then forward them
+  // to the appropriate environment. The environment can be live, or simulated as
+  // during tests. This is a form of mocking. See http://en.wikipedia.org/wiki/Mock_object
   static private $env;
+
+  /**
+   * Get the current environment.
+   *
+   * see the comment on the private variable $env.
+   *
+   * default to a live environment if none is set. (During testing, a mock environment
+   * will be set here so we can better control it.)
+   *
+   * @return
+   *   An object of type RealisticDummyContentEnvironment
+   */
   static function Get() {
     if (!self::$env) {
       self::$env = new RealisticDummyContentLiveEnvironment;
     }
     return self::$env;
   }
+
+  /**
+   * Set the current environment
+   *
+   * See the comment on the private variable $env.
+   *
+   * @param $environment
+   *   An object of type RealisticDummyContentEnvironment
+   */
   static function Set($environment) {
     self::$env = $environment;
   }
@@ -62,11 +87,25 @@ abstract class RealisticDummyContentEnvironment {
    */
   abstract function _file_get_contents_($filename);
 
+  /**
+   * Save the file data to the real or test environment.
+   *
+   * @param $data
+   *   The data
+   * @param $destination
+   *   Where to put
+   *
+   * @return
+   *
+   * @throws
+   *   Exception
+   */
   function file_save_data($data, $destination = NULL) {
     $return = $this->_file_save_data_($data, $destination);
     return $return;
   }
   abstract function _file_save_data_($data, $destination = NULL);
+
   function file_save(stdClass $file) {
     $return = $this->_file_save_($file);
     return $return;

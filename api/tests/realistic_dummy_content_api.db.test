@@ -90,7 +90,6 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
       $image_set = isset($node->field_image[LANGUAGE_NONE]);
       $this->assertTrue($image_set, 'Node image is set. There exists an image for this node because $node->field_image[LANGUAGE_NONE] is not empty.');
       if (!$image_set) {
-        debug($node);
         continue;
       }
       $filename = $node->field_image[LANGUAGE_NONE][0]['filename'];
@@ -118,8 +117,7 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
       $this->assertTrue($body == $body_expected, 'Body first letter (' . $body . ') is as expected (' . $body_expected . ') for this nid (' . $nid . ')');
       $this->assertTag($expected_values['tag'][($nid - 1)%3], $node);
     }
-    debug($images_with_alt);
-    $this->assertTrue(count($images_with_alt) == 1, 'One image has an alt');
+    $this->assertTrue(count($images_with_alt) == 3, 'Three images are expected to have an alt because even though several images exist, we are using the sequential method and therefore only cycling through the first three (because there are only three values to other fields); ' . count($images_with_alt) . ' have an alt text; ' . (count($nodes) - count($images_with_alt)) . ' do not have an alt text');
   }
 
   /**
@@ -172,7 +170,7 @@ class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
   public function testRecipe() {
     $this->assertTrue(module_load_include('inc', 'realistic_dummy_content_api', 'realistic_dummy_content_api.drush'), 'drush file exists');
     $this->assertTrue(class_exists('RealisticDummyContentDrushAPILog'), 'The drush log class exists; it is required when running drush generate-realistic or other drush commands');
-    $this->assertTrue(class_exists('RealisticDummyContentDebugLog'), 'aaa');
+    $this->assertTrue(class_exists('RealisticDummyContentDebugLog'), 'The RealisticDummyContentDebugLog class exists, thereby preventing a fatal error.');
     realistic_dummy_content_api_apply_recipe(new RealisticDummyContentDebugLog);
     $page = node_load(4);
     $article = node_load(14);
