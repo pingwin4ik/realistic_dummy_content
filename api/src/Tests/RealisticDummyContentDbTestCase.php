@@ -15,7 +15,7 @@ use \Drupal\Tests\WebTestBase;
  *
  * @group realistic_dummy_content
  */
-class realistic_dummy_content_DatabaseTestCase extends DrupalWebTestCase {
+class RealisticDummyContentDbTestCase extends DrupalWebTestCase {
   public static $modules = array('realistic_dummy_content_api', 'realistic_dummy_content', 'devel_generate');
 
   /**

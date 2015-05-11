@@ -4,8 +4,7 @@
  * This file contains the testing code for this module
  */
 
-namespace Drupal\foo\Tests;
-
+namespace Drupal\realistic_dummy_content\Tests;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -40,7 +39,7 @@ class RealisticDummyContentUnitTestCaseDummyFile {
  *
  * @group realistic_dummy_content
  */
-class realistic_dummy_content_UnitTestCase extends UnitTestCase {
+class RealisticDummyContentUnitTestCase extends UnitTestCase {
   public function setUp() {
     // specifically include files which contain functions to test.
     module_load_include('module', 'realistic_dummy_content_api');
