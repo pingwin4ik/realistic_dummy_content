@@ -8,4 +8,4 @@ ADD . ./srv/drupal/www/modules/realistic_dummy_content/
 
 EXPOSE 80
 
-# RUN cd ./srv/drupal/www && drush --uri=http://127.0.0.1 test-run "Realistic dummy content"
+RUN cd ./srv/drupal/www && drush --uri=http://127.0.0.1 test-run "Realistic dummy content"
