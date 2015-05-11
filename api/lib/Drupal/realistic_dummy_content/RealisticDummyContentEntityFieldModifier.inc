@@ -65,7 +65,7 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
     $entity = $this->GetEntity();
     $type = $this->GetType();
     $bundle = $this->GetBundle();
-    $fields = field_info_fields();
+    $fields = entity_load_multiple('field');
     foreach ($fields as $field => $info) {
       if (isset($info['bundles'][$type]) && is_array($info['bundles'][$type]) && in_array($this->GetBundle(), $info['bundles'][$type]) && $this->filter($field)) {
         $this->AddModifier($modifiable_fields, 'field', $field);
@@ -130,7 +130,7 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
       $modifier = new $class($this, $name);
     }
     else {
-      watchdog('realistic_dummy_content_api', 'Class does not exist: @c. This is probably because a third-party module has implemented realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter() with a class that cannot be implemented. @original will used instead.', array('@c' => $class, '@original' => $original_class));
+      \Drupal::logger('my_module')->notice(t('realistic_dummy_content_api', 'Class does not exist: @c. This is probably because a third-party module has implemented realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter() with a class that cannot be implemented. @original will used instead.', array('@c' => $class, '@original' => $original_class)));
       $modifier = new $original_class($this, $name);
     }
 

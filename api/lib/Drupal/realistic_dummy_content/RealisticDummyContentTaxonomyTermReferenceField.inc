@@ -56,7 +56,8 @@ class RealisticDummyContentTermReferenceField extends RealisticDummyContentField
       $vocabulary_name = $vocabulary['vocabulary'];
       foreach ($vocabularies as $vocabulary) {
         if ($vocabulary->machine_name == $vocabulary_name) {
-          $candidate_existing_terms = array_merge($candidate_existing_terms, taxonomy_get_tree($vocabulary->vid));
+          $tree = \Drupal::entityManager()->getStorage('taxonomy_term')->loadTree($vocabulary->vid);
+          $candidate_existing_terms = array_merge($candidate_existing_terms, $tree);
         }
       }
     }
@@ -70,10 +71,9 @@ class RealisticDummyContentTermReferenceField extends RealisticDummyContentField
       throw new Exception('Expecting the taxonomy term reference to reference at least one vocabulary');
     }
 
-    $term = new stdClass();
-    $term->name = $name;
-    $term->vid = $vocabulary->vid;
-    taxonomy_term_save($term);
+    $term_values['name'] = $name;
+    $term_values['vid'] = $vocabulary->vid;
+    $term = entity_save('term', $term_values);
     if ($term->tid) {
       return $term->tid;
     }

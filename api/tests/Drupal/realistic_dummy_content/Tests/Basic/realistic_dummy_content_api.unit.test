@@ -4,6 +4,10 @@
  * This file contains the testing code for this module
  */
 
+namespace Drupal\foo\Tests;
+
+use Drupal\Tests\UnitTestCase;
+
 /**
  * Dummy file, used to test how fields manage files
  */
@@ -32,20 +36,11 @@ class RealisticDummyContentUnitTestCaseDummyFile {
 }
 
 /**
- * The test case
+ * Test pure functions for Realistic dummy content.
+ *
+ * @group realistic_dummy_content
  */
-class realistic_dummy_content_UnitTestCase extends DrupalUnitTestCase {
-  /**
-   * Info for this test case.
-   */
-  public static function getInfo() {
-    return array(
-      'name' => t('Realistic dummy content unit test'),
-      'description' => t('Test pure functions for Realistic dummy content.'),
-      'group' => 'Realistic dummy content',
-    );
-  }
-
+class realistic_dummy_content_UnitTestCase extends UnitTestCase {
   public function setUp() {
     // specifically include files which contain functions to test.
     module_load_include('module', 'realistic_dummy_content_api');

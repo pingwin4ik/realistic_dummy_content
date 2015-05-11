@@ -323,7 +323,7 @@ function realistic_dummy_content_api_realistic_dummy_content_api_dummy($entity, 
  *   Please see the description of realistic_dummy_content_api_sequential() for details.
  */
 function realistic_dummy_content_api_rand($start, $end, $hash = NULL) {
-  if (variable_get('realistic_dummy_content_api_rand', REALISTIC_DUMMY_CONTENT_RANDOM)) {
+  if (\Drupal::state()->get('realistic_dummy_content_api_rand') ?: REALISTIC_DUMMY_CONTENT_RANDOM) {
     return rand($start, $end);
   }
   else return realistic_dummy_content_api_sequential($start, $end, $hash);

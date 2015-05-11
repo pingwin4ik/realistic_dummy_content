@@ -365,7 +365,7 @@ abstract class RealisticDummyContentEnvironment {
    *   The lowercase radical without the extension, e.g. readme
    */
   static function LowercaseRadicalNoExtension($filename) {
-    return drupal_strtolower(trim(preg_replace('/\.[^\.]*$/', '', $filename)));
+    return Unicode::strtolower(trim(preg_replace('/\.[^\.]*$/', '', $filename)));
   }
 
   /**

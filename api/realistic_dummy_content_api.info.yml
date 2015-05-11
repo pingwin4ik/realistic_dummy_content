@@ -1,0 +1,35 @@
+type: module
+name: Realistic Dummy Content API
+description: Allows enabled modules to generate kick-ass demo content (see the Realistic Dummy Content module for an example of how to do this). Do not enable on production sites.
+package: Development
+core: 8.x
+tags:
+  - developer
+
+files:
+  - includes/RealisticDummyContentException.inc
+  - includes/RealisticDummyContentBase.inc
+  - includes/RealisticDummyContentEntityBase.inc
+  - includes/RealisticDummyContentEntityFieldModifier.inc
+  - includes/RealisticDummyContentEnvironment.inc
+  - includes/RealisticDummyContentLiveEnvironment.inc
+  - includes/RealisticDummyContentDummyEnvironment.inc
+  - includes/RealisticDummyContentRecipe.inc
+  - includes/RealisticDummyContentAPIRecipe.inc
+  - includes/RealisticDummyContentDevelGenerateGenerator.inc
+  - includes/RealisticDummyContentGenerator.inc
+  - includes/RealisticDummyContentAttribute.inc
+  - includes/RealisticDummyContentField.inc
+  - includes/RealisticDummyContentFileGroup.inc
+  - includes/RealisticDummyContentValueField.inc
+  - includes/RealisticDummyContentProperty.inc
+  - includes/RealisticDummyContentImageField.inc
+  - includes/RealisticDummyContentTaxonomyTermReferenceField.inc
+  - includes/RealisticDummyContentTextWithSummaryField.inc
+  - includes/RealisticDummyContentTextProperty.inc
+  - includes/RealisticDummyContentUserPicture.inc
+  - tests/realistic_dummy_content_api.db.test
+  - tests/realistic_dummy_content_api.unit.test
+
+test_dependencies:
+  - devel
