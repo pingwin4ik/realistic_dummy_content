@@ -6,16 +6,18 @@
  * tests are slower than the unit tests so we want to limit them.
  */
 
+namespace Drupal\realistic_dummy_content_api\Tests;
+use Drupal\simpletest\WebTestBase;
+
 use \Drupal\node\Entity\Node;
 use \Drupal\user\Entity\User;
-use \Drupal\Tests\WebTestBase;
 
 /**
  * Test Realistic dummy content with a temporary database.
  *
  * @group realistic_dummy_content
  */
-class RealisticDummyContentDbTestCase extends DrupalWebTestCase {
+class RealisticDummyContentDbTestCase extends WebTestBase {
   public static $modules = array('realistic_dummy_content_api', 'realistic_dummy_content', 'devel_generate');
 
   /**
