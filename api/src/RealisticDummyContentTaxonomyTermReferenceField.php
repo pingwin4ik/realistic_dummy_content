@@ -6,6 +6,8 @@
  * Define RealisticDummyContentTermReferenceField autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  */
 class RealisticDummyContentTermReferenceField extends RealisticDummyContentField {

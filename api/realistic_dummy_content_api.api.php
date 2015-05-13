@@ -44,31 +44,11 @@ function hook_realistic_dummy_content_attribute_manipulator_alter(&$class, &$typ
  *   or a node object.
  * @param $type
  *   The entity type of the information to change, for example 'user' or 'node'.
- * @param $filter
- *   If set, only certain fields will be considered when manipulating
- *   the object. This can be useful, for example for users, because
- *   two separate manipulations need to be performed, depending on whether
- *   hook_user_insert() or hook_user_presave(). Both hooks need to modify
- *   only certain properties and fields, but taken together the entire
- *   object can be manipulated.
- *   The filter is an associative array which can contain no key (all
- *   fields and properties should be manipulated), the include key (fields
- *   included are the only ones to be manipulated, or the exclude key (all
- *   fields except those included are the ones to be manipulated).
- *
- *   realistic_dummy_content_api_user_insert() defines the array
- *   ('exclude' => array(picture)) whereas
- *   realistic_dummy_content_api_user_presave() defines the array
- *   ('include' => array(picture)). Therefore taken together these two
- *   hooks manipulate the entire user object, but in two phases.
- *
- *   This allows hook implementations to return a different class based on
- *   the type of filter.
  *
  * @return
  *   Array of objects which are a subclass of RealisticDummyContentBase.
  */
-function hook_realistic_dummy_content_api_class($entity, $type, $filter = array()) {
+function hook_realistic_dummy_content_api_class($entity, $type) {
   return array(
     // Insert class names for all classes which can modify entities for the
     // given type. These classes must exist, either through Drupal's

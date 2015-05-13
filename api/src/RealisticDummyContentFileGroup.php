@@ -6,6 +6,8 @@
  * Define RealisticDummyContentFileGroup autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * Represents files as groups.
  *

@@ -6,6 +6,8 @@
  * Define RealisticDummyContentFieldModifier autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * Represents a generic field which appears in an entity object as
  * array('value' => 'xyz').

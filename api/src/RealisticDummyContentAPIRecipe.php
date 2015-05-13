@@ -6,6 +6,8 @@
  * Define RealisticDummyContentAPIRecipe autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 abstract class RealisticDummyContentAPIRecipe extends RealisticDummyContentRecipe {
   // Prior to beta4, RealisticDummyContentAPIRecipe was used. To avoid modifying
   // all sites which use this funcitonality, this class is included for

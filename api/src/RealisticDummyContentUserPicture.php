@@ -6,6 +6,8 @@
  * Define RealisticDummyContentUserPicture autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * Represents the user picture
  */

@@ -1,10 +1,11 @@
 <?php
-
 /**
  * @file
  *
  * Define RealisticDummyContentGenerator autoload class.
  */
+
+namespace Drupal\realistic_dummy_content_api;
 
 abstract class RealisticDummyContentGenerator {
   private $type;
@@ -13,11 +14,10 @@ abstract class RealisticDummyContentGenerator {
   private $more;
 
   /**
-   * @param $more
-   *   Can contain:
-   *     kill => TRUE|FALSE
+   * @param $more = array()
+   *   For future use.
    */
-  function __construct($type, $bundle, $num, $more) {
+  function __construct($type, $bundle, $num, $more = array()) {
     $this->type = $type;
     $this->bundle = $bundle;
     $this->num = $num;

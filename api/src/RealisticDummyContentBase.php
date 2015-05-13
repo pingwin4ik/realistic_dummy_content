@@ -6,6 +6,8 @@
  * Define RealisticDummyContentBase autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * The most generic content manipulator.
  *

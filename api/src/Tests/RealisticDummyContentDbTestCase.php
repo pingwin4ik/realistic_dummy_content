@@ -7,6 +7,7 @@
  */
 
 namespace Drupal\realistic_dummy_content_api\Tests;
+use Drupal\realistic_dummy_content_api\RealisticDummyContentSimpleGenerator;
 use Drupal\simpletest\WebTestBase;
 
 use \Drupal\node\Entity\Node;
@@ -18,7 +19,8 @@ use \Drupal\user\Entity\User;
  * @group realistic_dummy_content
  */
 class RealisticDummyContentDbTestCase extends WebTestBase {
-  public static $modules = array('realistic_dummy_content_api', 'realistic_dummy_content', 'devel_generate');
+  // Adding 'filter' because of https://www.drupal.org/node/2487786
+  public static $modules = array('realistic_dummy_content_api', 'realistic_dummy_content', 'devel_generate', 'filter');
 
   /**
    * Enable the module
@@ -54,12 +56,12 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
     $nids = array();
     for ($i = 1; $i <= 9; $i++) {
       $node_values = (object)array(
-        'title' => $this->randomName(),
+        'title' => $this->randomString(),
         'type' => 'article',
         'body' => array(
           LANGUAGE_NONE => array(
             array(
-              $this->randomName(), // This should always be replaced.
+              $this->randomString(), // This should always be replaced.
             ),
           ),
         ),
@@ -156,8 +158,9 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
    */
   public function testUser() {
     // Create a user with devel_generate
-    module_load_include('inc', 'devel_generate');
-    devel_create_users(1, 0);
+
+    $generator = new RealisticDummyContentSimpleGenerator('user', 'user', 1);
+    $generator->Generate();
 
     // Load the user and view
     $user = User::load(2);
@@ -176,8 +179,7 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
   public function testRecipe() {
     $this->assertTrue(module_load_include('inc', 'realistic_dummy_content_api', 'realistic_dummy_content_api.drush'), 'drush file exists');
     $this->assertTrue(class_exists('RealisticDummyContentDrushAPILog'), 'The drush log class exists; it is required when running drush generate-realistic or other drush commands');
-    $this->assertTrue(class_exists('RealisticDummyContentDebugLog'), 'The RealisticDummyContentDebugLog class exists, thereby preventing a fatal error.');
-    realistic_dummy_content_api_apply_recipe(new RealisticDummyContentDebugLog);
+    realistic_dummy_content_api_apply_recipe(new \Drupal\realistic_dummy_content_api\RealisticDummyContentDebugLog);
     $page = Node::load(4);
     $article = Node::load(14);
     $this->assertTrue(isset($page->type) && $page->type == 'page', 'Node 4 is a page, as specified in the recipe.');

@@ -6,6 +6,8 @@
  * Define RealisticDummyContentException autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 // When returning the caller of the function which resulted in the exception
 // we need to go 4 levels deep. When returning the called function, we also
 // need to 4 levels deep, but call GetCaller() through another function which adds

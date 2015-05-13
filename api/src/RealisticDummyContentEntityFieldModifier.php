@@ -6,6 +6,8 @@
  * Define RealisticDummyContentFieldModifier autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * Field modifier class.
  *
@@ -45,7 +47,7 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
     $modifiable_properties = array();
     $fields = $this->GetFields();
     foreach ((array)$this->GetEntity() as $property => $info) {
-      if (!in_array($property, array_keys($fields)) && $this->filter($property)) {
+      if (!in_array($property, array_keys($fields))) {
         $this->AddModifier($modifiable_properties, 'property', $property);
       }
     }
@@ -67,7 +69,7 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
     $bundle = $this->GetBundle();
     $fields = entity_load_multiple('field');
     foreach ($fields as $field => $info) {
-      if (isset($info['bundles'][$type]) && is_array($info['bundles'][$type]) && in_array($this->GetBundle(), $info['bundles'][$type]) && $this->filter($field)) {
+      if (isset($info['bundles'][$type]) && is_array($info['bundles'][$type]) && in_array($this->GetBundle(), $info['bundles'][$type])) {
         $this->AddModifier($modifiable_fields, 'field', $field);
       }
     }

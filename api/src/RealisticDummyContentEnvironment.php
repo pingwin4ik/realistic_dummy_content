@@ -6,6 +6,8 @@
  * Define RealisticDummyContentLiveEnvironment autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * The abstract base environment.
  *

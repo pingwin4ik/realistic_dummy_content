@@ -6,6 +6,8 @@
  * Define RealisticDummyContentImageField autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * Field modifier for image fields.
  */

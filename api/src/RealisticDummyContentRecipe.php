@@ -6,6 +6,8 @@
  * Define RealisticDummyContentRecipe autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 abstract class RealisticDummyContentRecipe {
   static $log;
 
@@ -25,7 +27,8 @@ abstract class RealisticDummyContentRecipe {
     // We need to cycle through all active modules and look for those
     // which contain a class module_name_realistic_dummy_content_recipe
     // in the file realistic_dummy_content/recipe/module_name.recipe.inc
-    $modules = module_list();
+    $moduleHandler = \Drupal::moduleHandler();
+    $modules = $moduleHandler->getModuleList();
     foreach ($modules as $module) {
       $candidate = $module . '_realistic_dummy_content_recipe';
       if (module_load_include('inc', $module, 'realistic_dummy_content/recipe/' . $module . '.recipe') && class_exists($candidate)) {
@@ -67,11 +70,11 @@ abstract class RealisticDummyContentRecipe {
   }
 
   static function StartTime($id) {
-    timer_start(serialize($id));
+    \Drupal\Component\Utility\Timer::start(serialize($id));
   }
 
   static function StopTime($id) {
-    $timer = timer_stop(serialize($id));
+    $timer = \Drupal\Component\Utility\Timer::stop(serialize($id));
     return $timer['time'];
   }
 }

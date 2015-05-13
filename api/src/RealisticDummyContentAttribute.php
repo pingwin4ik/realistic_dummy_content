@@ -6,6 +6,8 @@
  * Define RealisticDummyContentAttribute autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * Represents either a field or a property for an entity.
  *
@@ -171,7 +173,9 @@ abstract class RealisticDummyContentAttribute {
    */
   function GetCandidateFiles() {
     $files = array();
-    foreach (module_list() as $module) {
+    $moduleHandler = \Drupal::moduleHandler();
+    $modules = $moduleHandler->getModuleList();
+    foreach ($modules as $module) {
       $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . '/realistic_dummy_content/fields/' . $this->GetEntityType() . '/' . $this->GetBundle() . '/' . $this->GetName();
       $files = array_merge($files, RealisticDummyContentEnvironment::GetAllFileGroups($filepath, $this->GetExtensions()));
     }

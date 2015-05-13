@@ -6,6 +6,8 @@
  * Define RealisticDummyContentTextWithSummaryField autoload class.
  */
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * Represents the text with summary field, which must have a text format when part
  * of an entity object. Node body is one example.

@@ -4,7 +4,7 @@
  * This file contains the testing code for this module
  */
 
-namespace Drupal\realistic_dummy_content\Tests;
+namespace Drupal\realistic_dummy_content_api\Tests;
 use Drupal\Tests\UnitTestCase;
 
 /**
