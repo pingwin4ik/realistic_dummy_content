@@ -42,7 +42,7 @@ class RealisticDummyContentUnitTestCaseDummyFile {
 class RealisticDummyContentUnitTestCase extends UnitTestCase {
   public function setUp() {
     // specifically include files which contain functions to test.
-    module_load_include('module', 'realistic_dummy_content_api');
+    require_once DRUPAL_ROOT . '/modules/realistic_dummy_content/api/realistic_dummy_content_api.module';
     parent::setUp();
   }
 
