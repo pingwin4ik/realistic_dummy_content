@@ -6,6 +6,4 @@ FROM alberto56/docker-drupal:8.0.x-dev-1.0-8.0.0-beta10
 
 ADD . ./srv/drupal/www/modules/realistic_dummy_content/
 
-RUN cd /srv/drupal/www/core/vendor/phpunit/phpunit && composer install
-
 RUN cd /srv/drupal/www && php ./core/scripts/run-tests.sh --php /usr/bin/php --url http://127.0.0.1/ realistic_dummy_content
