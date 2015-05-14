@@ -2,7 +2,7 @@
 # and it does not allow us to use the -f flag to specify another filename (for
 # example Dockerfile-test). (See also ./scripts/test.sh).
 # For the base Dockerfile, see https://github.com/alberto56/docker-drupal
-FROM alberto56/docker-drupal:8.0.x-dev-1.1-8.0.0-beta10
+FROM alberto56/docker-drupal:8.0.x-dev-1.2-8.0.0-beta10
 
 ADD . ./srv/drupal/www/modules/realistic_dummy_content/
 
