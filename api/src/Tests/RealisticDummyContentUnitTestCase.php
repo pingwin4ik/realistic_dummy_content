@@ -6,33 +6,7 @@
 
 namespace Drupal\realistic_dummy_content_api\Tests;
 use Drupal\Tests\UnitTestCase;
-
-/**
- * Dummy file, used to test how fields manage files
- */
-class RealisticDummyContentUnitTestCaseDummyFile {
-  private $value;
-
-  /**
-   * Constructor.
-   *
-   * @param $value
-   *   The value to return
-   */
-  function __construct($value) {
-    $this->value = $value;
-  }
-
-  /**
-   * Returns the dummy value.
-   *
-   * @return
-   *   The value we used when creating this object.
-   */
-  function Value() {
-    return $this->value;
-  }
-}
+use Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile;
 
 /**
  * Test pure functions for Realistic dummy content.
@@ -106,7 +80,7 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
    * Test that file names are properly parsed and combined.
    */
   function testFiles() {
-    module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentEnvironment');
+    require_once DRUPAL_ROOT . '/modules/realistic_dummy_content/api/src/RealisticDummyContentEnvironment.php';
     $data = array(
       'one.txt' => new stdClass(),
       'reAdme.txt' => new stdClass(),
@@ -120,8 +94,8 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
       'three.png.alt.txt' => new stdClass(),
     );
     try {
-      $parsed = RealisticDummyContentEnvironment::SortCandidateFiles($data);
-      $parsed_images = RealisticDummyContentEnvironment::SortCandidateFiles($data, array('png'));
+      $parsed = \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::SortCandidateFiles($data);
+      $parsed_images = \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::SortCandidateFiles($data, array('png'));
     }
     catch (Exception $e) {
       $this->assertFalse(TRUE, 'Got exception ' . $e->getMessage());
