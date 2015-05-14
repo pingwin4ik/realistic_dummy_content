@@ -4,13 +4,14 @@
  * This file contains the testing code for this module
  */
 
-namespace Drupal\realistic_dummy_content_api\Tests;
+namespace Drupal\Tests\realistic_dummy_content_api\Unit;
 use Drupal\Tests\UnitTestCase;
 use Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile;
 
 /**
  * Test pure functions for Realistic dummy content.
  *
+ * @group phpunit_realistic_dummy_content
  * @group realistic_dummy_content
  */
 class RealisticDummyContentUnitTestCase extends UnitTestCase {
