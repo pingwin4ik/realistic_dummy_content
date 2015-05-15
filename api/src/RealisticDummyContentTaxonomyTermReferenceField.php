@@ -3,14 +3,14 @@
 /**
  * @file
  *
- * Define RealisticDummyContentTermReferenceField autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentTermReferenceField autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
 
 /**
  */
-class RealisticDummyContentTermReferenceField extends RealisticDummyContentField {
+class RealisticDummyContentTermReferenceField extends \Drupal\realistic_dummy_content_api\RealisticDummyContentField {
   /**
    * {@inheritdoc}
    */
@@ -19,7 +19,7 @@ class RealisticDummyContentTermReferenceField extends RealisticDummyContentField
       $termname = $file->Value();
       if ($termname) {
         return array(
-          LANGUAGE_NONE => array(
+          \Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED => array(
             array(
               'tid' => $this->GetTid($termname),
             ),
@@ -27,7 +27,7 @@ class RealisticDummyContentTermReferenceField extends RealisticDummyContentField
         );
       }
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return NULL;
     }
   }
@@ -48,7 +48,7 @@ class RealisticDummyContentTermReferenceField extends RealisticDummyContentField
    *   The associated pre-existing or just-created tid.
    *
    * @throws
-   *   Exception
+   *   \Exception
    */
   function GetTid($name) {
     $vocabularies = taxonomy_get_vocabularies();
@@ -70,7 +70,7 @@ class RealisticDummyContentTermReferenceField extends RealisticDummyContentField
     }
 
     if (!isset($vocabulary->vid)) {
-      throw new Exception('Expecting the taxonomy term reference to reference at least one vocabulary');
+      throw new \Exception('Expecting the taxonomy term reference to reference at least one vocabulary');
     }
 
     $term_values['name'] = $name;
@@ -80,7 +80,7 @@ class RealisticDummyContentTermReferenceField extends RealisticDummyContentField
       return $term->tid;
     }
     else {
-      throw new Exception('tid could not be determined');
+      throw new \Exception('tid could not be determined');
     }
   }
 

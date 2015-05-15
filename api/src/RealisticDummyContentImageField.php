@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentImageField autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentImageField autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -11,7 +11,7 @@ namespace Drupal\realistic_dummy_content_api;
 /**
  * Field modifier for image fields.
  */
-class RealisticDummyContentImageField extends RealisticDummyContentField {
+class RealisticDummyContentImageField extends \Drupal\realistic_dummy_content_api\RealisticDummyContentField {
   /**
    * {@inheritdoc}
    */
@@ -30,7 +30,7 @@ class RealisticDummyContentImageField extends RealisticDummyContentField {
     $file = $this->ImageSave($file);
     if ($file) {
       $return = array(
-        LANGUAGE_NONE => array(
+        \Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED => array(
           (array)$file,
         ),
       );

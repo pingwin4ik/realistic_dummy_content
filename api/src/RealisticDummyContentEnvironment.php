@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentLiveEnvironment autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentLiveEnvironment autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -18,7 +18,7 @@ namespace Drupal\realistic_dummy_content_api;
  */
 abstract class RealisticDummyContentEnvironment {
   // Private variable containing the environment to use. Calls are made directly
-  // to RealisticDummyContentEnvironment's static methods, which then forward them
+  // to \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment's static methods, which then forward them
   // to the appropriate environment. The environment can be live, or simulated as
   // during tests. This is a form of mocking. See http://en.wikipedia.org/wiki/Mock_object
   static private $env;
@@ -32,11 +32,11 @@ abstract class RealisticDummyContentEnvironment {
    * will be set here so we can better control it.)
    *
    * @return
-   *   An object of type RealisticDummyContentEnvironment
+   *   An object of type \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment
    */
   static function Get() {
     if (!self::$env) {
-      self::$env = new RealisticDummyContentLiveEnvironment;
+      self::$env = new \Drupal\realistic_dummy_content_api\RealisticDummyContentLiveEnvironment;
     }
     return self::$env;
   }
@@ -47,7 +47,7 @@ abstract class RealisticDummyContentEnvironment {
    * See the comment on the private variable $env.
    *
    * @param $environment
-   *   An object of type RealisticDummyContentEnvironment
+   *   An object of type \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment
    */
   static function Set($environment) {
     self::$env = $environment;
@@ -60,14 +60,14 @@ abstract class RealisticDummyContentEnvironment {
    *   A valid filename, for example /drupal/root/sites/all/modules/your_module/realistic_dummy_content/fields/node/blog/body/03.txt
    *
    * @throws
-   *   Exception
+   *   \Exception
    */
   function file_get_contents($filename) {
     if (!$filename) {
-      throw new RealisticDummyContentException('Please use valid filename');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use valid filename');
     }
     if (strpos($filename, '/') === FALSE) {
-      throw new RealisticDummyContentException('Please use an absolute filename including its path, which must always contain at least one slash. You are using ' . $filename);
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use an absolute filename including its path, which must always contain at least one slash. You are using ' . $filename);
     }
     $return = $this->_file_get_contents_($filename);
     return $return;
@@ -77,7 +77,7 @@ abstract class RealisticDummyContentEnvironment {
    * Internal function used to get the contents of a file.
    *
    * Wrapper around PHP's file_get_contents() (or a simulation thereof).
-   * This function will not return an exception. Please use RealisticDummyContentEnvironment::
+   * This function will not return an \Exception. Please use \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::
    * file_get_contents(), instead.
    *
    * @param $filename
@@ -100,7 +100,7 @@ abstract class RealisticDummyContentEnvironment {
    * @return
    *
    * @throws
-   *   Exception
+   *   \Exception
    */
   function file_save_data($data, $destination = NULL) {
     $return = $this->_file_save_data_($data, $destination);
@@ -143,7 +143,7 @@ abstract class RealisticDummyContentEnvironment {
    *
    * @return
    *   An empty array in case of an error, or an array of objects of type
-   *   RealisticDummyContentFileGroup.
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContentFileGroup.
    */
   static function GetAllFileGroups($filepath, $extensions) {
     try {
@@ -154,11 +154,11 @@ abstract class RealisticDummyContentEnvironment {
       $return = array();
       foreach ($files as $radical => $attributes) {
 
-        $return[] = new RealisticDummyContentFileGroup($radical, isset($attributes['file']) ? $attributes['file'] : NULL, isset($attributes['attributes']) ? $attributes['attributes'] : array());
+        $return[] = new \Drupal\realistic_dummy_content_api\RealisticDummyContentFileGroup($radical, isset($attributes['file']) ? $attributes['file'] : NULL, isset($attributes['attributes']) ? $attributes['attributes'] : array());
       }
       return $return;
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return array();
     }
   }
@@ -202,27 +202,27 @@ abstract class RealisticDummyContentEnvironment {
    *     three.txt => array('file' => [file object]),
    *
    * @throws
-   *   RealisticDummyContentException
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception
    */
   static function SortCandidateFiles($candidate_files, $extensions = NULL) {
     foreach ($candidate_files as $candidate_filename => $candidate_file) {
       if (!is_string($candidate_filename)) {
-        // Explicitly load the Exception class, because during unit tests the
+        // Explicitly load the \Exception class, because during unit tests the
         // registry is not present.
-        module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentException');
-        throw new RealisticDummyContentException('array keys should be strings');
+        module_load_include('inc', 'realistic_dummy_content_api', 'includes/\Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('array keys should be strings');
       }
       if (!is_object($candidate_file)) {
-        // Explicitly load the Exception class, because during unit tests the
+        // Explicitly load the \Exception class, because during unit tests the
         // registry is not present.
-        module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentException');
-        throw new RealisticDummyContentException('array values should be file objects');
+        module_load_include('inc', 'realistic_dummy_content_api', 'includes/\Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('array values should be file objects');
       }
       if (strpos($candidate_filename, '/') !== FALSE) {
-        // Explicitly load the Exception class, because during unit tests the
+        // Explicitly load the \Exception class, because during unit tests the
         // registry is not present.
-        module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentException');
-        throw new RealisticDummyContentException('Please do not pass file paths with slashes (/) to ' . __FUNCTION__);
+        module_load_include('inc', 'realistic_dummy_content_api', 'includes/\Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please do not pass file paths with slashes (/) to ' . __FUNCTION__);
       }
     }
     $return = self::SortCandidateFiles_($candidate_files, $extensions);
@@ -242,7 +242,7 @@ abstract class RealisticDummyContentEnvironment {
    *   A sorted array. See SortCandidateFiles().
    *
    * @throws
-   *   Exception
+   *   \Exception
    */
   static function SortCandidateFiles_($candidate_files, $extensions = NULL) {
     $return = array();
@@ -312,7 +312,7 @@ abstract class RealisticDummyContentEnvironment {
    *   "b".
    *
    * @throws
-   *   Exception
+   *   \Exception
    */
   static function AttributeName($filename) {
     $replaced = self::Replace($filename, '\2');
@@ -348,11 +348,11 @@ abstract class RealisticDummyContentEnvironment {
    *   The name radical of this file, for example a.txt.
    *
    * @throws
-   *   RealisticDummyContentException
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception
    */
   static function FilenameRadical($filename) {
     if (!is_string($filename)) {
-      throw new RealisticDummyContentException('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
     }
     return self::Replace($filename, '\1\3');
   }
@@ -367,7 +367,7 @@ abstract class RealisticDummyContentEnvironment {
    *   The lowercase radical without the extension, e.g. readme
    */
   static function LowercaseRadicalNoExtension($filename) {
-    return Unicode::strtolower(trim(preg_replace('/\.[^\.]*$/', '', $filename)));
+    return \Drupal\Component\Utility\Unicode::strtolower(trim(preg_replace('/\.[^\.]*$/', '', $filename)));
   }
 
   /**
@@ -389,11 +389,11 @@ abstract class RealisticDummyContentEnvironment {
    *   pattern is not found.
    *
    * @throws
-   *   RealisticDummyContentException
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception
    */
   static function Replace($filename, $replace) {
     if (!is_string($filename)) {
-      throw new RealisticDummyContentException('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
     }
     return preg_replace('/(^.*)\.([^\.]*)(\.[^\.]*$)/', $replace, $filename);
   }
@@ -411,11 +411,11 @@ abstract class RealisticDummyContentEnvironment {
   static function GetFileContents($file) {
     try {
       if (!is_object($file)) {
-        throw new RealisticDummyContentException('Please use a file object');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use a file object');
       }
       return trim(self::Get()->file_get_contents($file->uri));
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return NULL;
     }
   }

@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentFileGroup autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentFileGroup autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -78,17 +78,17 @@ class RealisticDummyContentFileGroup {
    *   (where attribute_name can be "b" as in the above example.)
    *
    * @throws
-   *   RealisticDummyContentException
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception
    */
   function __construct($radical, $file, $attributes) {
     if (!is_string($radical)) {
-      throw new RealisticDummyContentException('Please use string for radical');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use string for radical');
     }
     if ($file && !is_object($file)) {
-      throw new RealisticDummyContentException('Please use NULL or object for file');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use NULL or object for file');
     }
     if (!is_array($attributes)) {
-      throw new RealisticDummyContentException('Please use array for attributes');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use array for attributes');
     }
     $this->radical = $radical;
     $this->file = $file;
@@ -127,13 +127,13 @@ class RealisticDummyContentFileGroup {
     try {
       $file = $this->GetFile();
       if (isset($file->uri)) {
-        return trim(RealisticDummyContentEnvironment::Get()->file_get_contents($file->uri));
+        return trim(\Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::Get()->file_get_contents($file->uri));
       }
       else {
         return NULL;
       }
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return NULL;
     }
   }
@@ -154,14 +154,14 @@ class RealisticDummyContentFileGroup {
     try {
       $attributes = $this->GetAttributes();
       if (isset($attributes[$name]->uri)) {
-        $return = trim(RealisticDummyContentEnvironment::Get()->file_get_contents($attributes[$name]->uri));
+        $return = trim(\Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::Get()->file_get_contents($attributes[$name]->uri));
         return $return;
       }
       else {
         return $default;
       }
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return $default;
     }
   }
@@ -176,7 +176,7 @@ class RealisticDummyContentFileGroup {
     $filename = $this->GetRadical();
     $extension = pathinfo($filename, PATHINFO_EXTENSION);
     if (!$extension) {
-      throw new RealisticDummyContentException('Files require extensions.');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Files require extensions.');
     }
     return $extension;
   }

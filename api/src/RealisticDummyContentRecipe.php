@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentRecipe autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentRecipe autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -46,7 +46,7 @@ abstract class RealisticDummyContentRecipe {
   static function GetGenerator($type, $bundle, $count, $more) {
     if (in_array($type, array('user', 'node'))) {
       if (module_exists('devel_generate')) {
-        return new RealisticDummyContentDevelGenerateGenerator($type, $bundle, $count, $more);
+        return new \Drupal\realistic_dummy_content_api\RealisticDummyContentDevelGenerateGenerator($type, $bundle, $count, $more);
       }
       else {
         self::$log->Error(t('Please enable devel\'s devel_generate module to generate users or nodes.'));

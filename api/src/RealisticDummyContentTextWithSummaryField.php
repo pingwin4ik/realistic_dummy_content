@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentTextWithSummaryField autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentTextWithSummaryField autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -12,7 +12,7 @@ namespace Drupal\realistic_dummy_content_api;
  * Represents the text with summary field, which must have a text format when part
  * of an entity object. Node body is one example.
  */
-class RealisticDummyContentTextWithSummaryField extends RealisticDummyContentField {
+class RealisticDummyContentTextWithSummaryField extends \Drupal\realistic_dummy_content_api\RealisticDummyContentField {
   /**
    * {@inheritdoc}
    */
@@ -26,7 +26,7 @@ class RealisticDummyContentTextWithSummaryField extends RealisticDummyContentFie
     }
     if ($value) {
       return array(
-        LANGUAGE_NONE => array(
+        \Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED => array(
           array(
             'value' => $value,
             'format' => $format,

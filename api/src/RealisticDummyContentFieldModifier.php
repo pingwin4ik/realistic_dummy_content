@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentFieldModifier autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentFieldModifier autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -13,9 +13,9 @@ namespace Drupal\realistic_dummy_content_api;
  *
  * All manipulation of generated content to make it more realistic
  * passes through modifiers (direct or indirect subclasses of
- * RealisticDummyContentEntityBase).
+ * \Drupal\realistic_dummy_content_api\RealisticDummyContentEntityBase).
  *
- * This class (RealisticDummyContentFieldModifier) allows active modules to put files
+ * This class (\Drupal\realistic_dummy_content_api\RealisticDummyContentFieldModifier) allows active modules to put files
  * in a specific directory hierarchy resembling realistic_dummy_content/fields/
  * [entity_type]/[bundle]/[field_name], and for these files to define data which will
  * replace the values of the corresponding property or field in any given entity.
@@ -34,46 +34,58 @@ namespace Drupal\realistic_dummy_content_api;
  * realistic_dummy_content_api.api.php. (Realistic Dummy Content API defines specific
  * manipulators for the fields image, text_with_summary, taxonomy_term_reference...).
  */
-class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase {
+class RealisticDummyContentFieldModifier extends \Drupal\realistic_dummy_content_api\RealisticDummyContentEntityBase {
   /**
    * Get properties for the entity, for example user's picture or node's name.
    *
    * @return
-   *   An array of RealisticDummyContentAttribute objects, keyed by attribute name,
-   *   e.g. title => [RealisticDummyContentAttribute], field_image =>
-   *   [RealisticDummyContentAttribute]
+   *   An empty array is returned in case of an error.
+   *   An array of \Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute objects, keyed by attribute name,
+   *   e.g. title => [\Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute], field_image =>
+   *   [\Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute]
    */
   function GetProperties() {
-    $modifiable_properties = array();
-    $fields = $this->GetFields();
-    foreach ((array)$this->GetEntity() as $property => $info) {
-      if (!in_array($property, array_keys($fields))) {
-        $this->AddModifier($modifiable_properties, 'property', $property);
+    try {
+      $modifiable_properties = array();
+      $fields = $this->GetFields();
+      foreach ((array)$this->GetEntity() as $property => $info) {
+        if (!in_array($property, array_keys($fields))) {
+          $this->AddModifier($modifiable_properties, 'property', $property);
+        }
       }
+      return $modifiable_properties;
     }
-    return $modifiable_properties;
+    catch (\Exception $e) {
+      return array();
+    }
   }
 
   /**
    * Get fields for the entity, for example body or field_image.
    *
    * @return
-   *   An array of RealisticDummyContentAttribute objects, keyed by attribute name,
-   *   e.g. title => [RealisticDummyContentAttribute], field_image =>
-   *   [RealisticDummyContentAttribute]
+   *   An empty array is returned in case of an error.
+   *   An array of \Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute objects, keyed by attribute name,
+   *   e.g. title => [\Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute], field_image =>
+   *   [\Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute]
    */
   function GetFields() {
-    $modifiable_fields = array();
-    $entity = $this->GetEntity();
-    $type = $this->GetType();
-    $bundle = $this->GetBundle();
-    $fields = entity_load_multiple('field');
-    foreach ($fields as $field => $info) {
-      if (isset($info['bundles'][$type]) && is_array($info['bundles'][$type]) && in_array($this->GetBundle(), $info['bundles'][$type])) {
-        $this->AddModifier($modifiable_fields, 'field', $field);
+    try {
+      $modifiable_fields = array();
+      $entity = $this->GetEntity();
+      $type = $this->GetType();
+      $bundle = $this->GetBundle();
+      $fields = entity_load_multiple('field_config');
+      foreach ($fields as $field => $info) {
+        if (isset($info->bundle) && $info->bundle == $this->GetBundle() && $info->entity_type == $type) {
+          $this->AddModifier($modifiable_fields, 'field_config', $field);
+        }
       }
+      return $modifiable_fields;
     }
-    return $modifiable_fields;
+    catch (\Exception $e) {
+      return array();
+    }
   }
 
   /**
@@ -94,10 +106,10 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
    * be extended by module developers.
    *
    * @param &$modifiers
-   *   Existing array of subclasses of RealisticDummyContentAttribute, to which
+   *   Existing array of subclasses of \Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute, to which
    *   new modifiers will be added.
    * @param $type
-   *   Either 'property' or 'field'
+   *   Either 'property' or 'field_config'
    * @param $name
    *   Name of the property or field, for example 'body', 'picture', 'title',
    *  'field_image'.
@@ -106,11 +118,11 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
     $class = '';
     switch ($type) {
       case 'property':
-        $original_class = 'RealisticDummyContentTextProperty';
+        $original_class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentTextProperty';
         $attribute_type = $name;
         break;
-      case 'field':
-        $original_class = 'RealisticDummyContentValueField';
+      case 'field_config':
+        $original_class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentValueField';
         $field_info = field_info_field($name);
         $attribute_type = $field_info['type'];
         break;
@@ -119,7 +131,7 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
         break;
     }
     $class = $original_class;
-    drupal_alter('realistic_dummy_content_attribute_manipulator', $class, $type, $attribute_type);
+    \Drupal::moduleHandler()->alter('realistic_dummy_content_attribute_manipulator', $class, $type, $attribute_type);
 
     if (!$class) {
       // third-parties might want to signal that certain fields cannot be
@@ -132,7 +144,7 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
       $modifier = new $class($this, $name);
     }
     else {
-      \Drupal::logger('my_module')->notice(t('realistic_dummy_content_api', 'Class does not exist: @c. This is probably because a third-party module has implemented realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter() with a class that cannot be implemented. @original will used instead.', array('@c' => $class, '@original' => $original_class)));
+      \Drupal::logger('realistic_dummy_content_api')->notice(t('Class does not exist: @c. This is probably because a third-party module has implemented realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter() with a class that cannot be implemented. @original will used instead.', array('@c' => $class, '@original' => $original_class)));
       $modifier = new $original_class($this, $name);
     }
 
@@ -160,12 +172,18 @@ class RealisticDummyContentFieldModifier extends RealisticDummyContentEntityBase
    * which defines a common interface for dealing with them.
    *
    * @return
-   *   An array of RealisticDummyContentAttribute objects, keyed by attribute name,
-   *   e.g. title => [RealisticDummyContentAttribute], field_image =>
-   *   [RealisticDummyContentAttribute]
+   *   An empty array if an error occurred, or an array of \Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute
+   *   objects, keyed by attribute name,
+   *     title => [\Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute],
+   *     field_image => [\Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute]
    */
   function GetAttributes() {
-    return array_merge($this->GetFields(), $this->GetProperties());
+    try {
+      return array_merge($this->GetFields(), $this->GetProperties());
+    }
+    catch (\Exception $e) {
+      return array();
+    }
   }
 
   /**

@@ -17,16 +17,16 @@ function hook_realistic_dummy_content_attribute_manipulator_alter(&$class, &$typ
   // own field or property type.
   switch ($machine_name) {
     case 'picture': // the user picture
-      $class = 'RealisticDummyContentUserPicture';
+      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentUserPicture';
       break;
     case 'text_with_summary': // e.g. body
-      $class = 'RealisticDummyContentTextWithSummaryField';
+      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentTextWithSummaryField';
       break;
     case 'taxonomy_term_reference': // e.g. tags on articles
-      $class = 'RealisticDummyContentTermReferenceField';
+      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentTermReferenceField';
       break;
     case 'image': // e.g. images on articles
-      $class = 'RealisticDummyContentImageField';
+      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentImageField';
       break;
     default:
       break;
@@ -36,7 +36,7 @@ function hook_realistic_dummy_content_attribute_manipulator_alter(&$class, &$typ
 /**
  * hook_realistic_dummy_content_api_class().
  *
- * Return any object which is a subclass of RealisticDummyContentBase, which
+ * Return any object which is a subclass of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase, which
  * will be used to modify content which is deemed to be dummy content.
  *
  * @param $entity
@@ -46,15 +46,15 @@ function hook_realistic_dummy_content_attribute_manipulator_alter(&$class, &$typ
  *   The entity type of the information to change, for example 'user' or 'node'.
  *
  * @return
- *   Array of objects which are a subclass of RealisticDummyContentBase.
+ *   Array of objects which are a subclass of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase.
  */
 function hook_realistic_dummy_content_api_class($entity, $type) {
   return array(
     // Insert class names for all classes which can modify entities for the
     // given type. These classes must exist, either through Drupal's
     // autoload system or be included explictely, and they must be
-    // subclasses of RealisticDummyContentBase
-    'RealisticDummyContentFieldModifier',
+    // subclasses of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase
+    '\Drupal\realistic_dummy_content_api\RealisticDummyContentFieldModifier',
   );
 }
 

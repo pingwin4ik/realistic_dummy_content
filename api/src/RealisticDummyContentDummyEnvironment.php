@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentLiveEnvironment autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentLiveEnvironment autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -15,7 +15,7 @@ namespace Drupal\realistic_dummy_content_api;
  * system and such. However during testing we want to abstract that away. This
  * class represents the dummy environment which can be used during unit tests.
  */
-class RealisticDummyContentDummyEnvironment extends RealisticDummyContentEnvironment {
+class RealisticDummyContentDummyEnvironment extends \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment {
   private $files;
   function createFile($path, $data) {
     if (!is_array($this->files)) {
@@ -36,7 +36,7 @@ class RealisticDummyContentDummyEnvironment extends RealisticDummyContentEnviron
   }
   function _file_save_data_($data, $destination = NULL) {
     if (!$destination) {
-      throw new Exception('the dummy file system is not designed to use null destination');
+      throw new \Exception('the dummy file system is not designed to use null destination');
     }
     $parsed = parse_url($destination);
     $return_array = array(

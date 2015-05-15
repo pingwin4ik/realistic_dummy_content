@@ -2,7 +2,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentGenerator autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentGenerator autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;

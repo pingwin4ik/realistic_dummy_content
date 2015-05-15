@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentBase autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentBase autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -22,6 +22,6 @@ namespace Drupal\realistic_dummy_content_api;
  */
 abstract class RealisticDummyContentBase {
   function env() {
-    return RealisticDummyContentEnvironment::Get();
+    return \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::Get();
   }
 }

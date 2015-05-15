@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentUserPicture autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentUserPicture autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -11,7 +11,7 @@ namespace Drupal\realistic_dummy_content_api;
 /**
  * Represents the user picture
  */
-class RealisticDummyContentUserPicture extends RealisticDummyContentProperty {
+class RealisticDummyContentUserPicture extends \Drupal\realistic_dummy_content_api\RealisticDummyContentProperty {
   /**
    * {@inheritdoc}
    */

@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentAttribute autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -20,7 +20,7 @@ namespace Drupal\realistic_dummy_content_api;
 abstract class RealisticDummyContentAttribute {
   /**
    * The entity is set on construction and is a subclass of
-   * RealisticDummyContentEntityBase. It contains information about the
+   * \Drupal\realistic_dummy_content_api\RealisticDummyContentEntityBase. It contains information about the
    * entity to which this field instance is attached.
    */
   private $entity;
@@ -34,7 +34,7 @@ abstract class RealisticDummyContentAttribute {
    * Constructor.
    *
    * @param $entity
-   *   Subclass of RealisticDummyContentEntityBase.
+   *   Subclass of \Drupal\realistic_dummy_content_api\RealisticDummyContentEntityBase.
    * @param $name
    *   The name of the field, for example body or picture or field_image
    */
@@ -115,7 +115,7 @@ abstract class RealisticDummyContentAttribute {
    * title and the user picture.
    *
    * @return
-   *   'property' or 'field'
+   *   'property' or 'field_config'
    */
   abstract function GetType();
 
@@ -177,13 +177,13 @@ abstract class RealisticDummyContentAttribute {
     $modules = $moduleHandler->getModuleList();
     foreach ($modules as $module) {
       $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . '/realistic_dummy_content/fields/' . $this->GetEntityType() . '/' . $this->GetBundle() . '/' . $this->GetName();
-      $files = array_merge($files, RealisticDummyContentEnvironment::GetAllFileGroups($filepath, $this->GetExtensions()));
+      $files = array_merge($files, \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::GetAllFileGroups($filepath, $this->GetExtensions()));
     }
     return $files;
   }
 
   /**
-   * Given a RealisticDummyContentFileGroup object, get structured property if extentions ok.
+   * Given a \Drupal\realistic_dummy_content_api\RealisticDummyContentFileGroup object, get structured property if extentions ok.
    *
    * The structured property can then be added to the entity.
    *
@@ -204,26 +204,26 @@ abstract class RealisticDummyContentAttribute {
         return $this->ValueFromFile_($file);
       }
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return NULL;
     }
   }
 
   /**
-   * Given a RealisticDummyContentFileGroup object, get a structured property
+   * Given a \Drupal\realistic_dummy_content_api\RealisticDummyContentFileGroup object, get a structured property
    *
    * This function is not meant to called directly; rather, call ValueFromFile().
    * This function must be overriden by subclasses.
    *
    * @param $file
-   *   An object of type RealisticDummyContentFileGroup.
+   *   An object of type \Drupal\realistic_dummy_content_api\RealisticDummyContentFileGroup.
    *
    * @return
    *   Returns structured data to be added to the entity object, or NULL if such
    *   data can't be creatd.
    *
    * @throws
-   *   Exception.
+   *   \Exception.
    */
   protected abstract function ValueFromFile_($file);
 
@@ -246,7 +246,7 @@ abstract class RealisticDummyContentAttribute {
         return $this->ValueFromFile($file);
       }
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return NULL;
     }
   }
@@ -275,7 +275,7 @@ abstract class RealisticDummyContentAttribute {
    * Return an image file object if possible.
    *
    * @param $file
-   *   The RealisticDummyContentFileGroup object
+   *   The \Drupal\realistic_dummy_content_api\RealisticDummyContentFileGroup object
    *
    * @return
    *   NULL if the file is not an image, or if an error occurred; otherwise a
@@ -285,7 +285,7 @@ abstract class RealisticDummyContentAttribute {
     try {
       $exists = $file->Value();
       if (!$exists) {
-        throw new RealisticDummyContentException('Please check if the file exists before attempting to save it');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please check if the file exists before attempting to save it');
       }
       $return = NULL;
       if (in_array($file->GetRadicalExtension(), $this->GetImageExtensions())) {
@@ -297,7 +297,7 @@ abstract class RealisticDummyContentAttribute {
       }
       return $return;
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return NULL;
     }
   }
@@ -306,18 +306,18 @@ abstract class RealisticDummyContentAttribute {
    * Return a file object.
    *
    * @param $file
-   *   The original file, a RealisticDummyContentFileGroup object.
+   *   The original file, a \Drupal\realistic_dummy_content_api\RealisticDummyContentFileGroup object.
    *
    * @return
    *   A file object.
    *
    * @throws
-   *   Exception.
+   *   \Exception.
    */
   function FileSave($file) {
     $drupal_file = $file->GetFile();
     if (!$drupal_file) {
-      throw new RealisticDummyContentException('Please check if the file exists before attempting to save it');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please check if the file exists before attempting to save it');
     }
     $uri = $drupal_file->uri;
     //$random = md5($uri) . rand(1000000000, 9999999999);

@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentEntityBase autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentEntityBase autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -15,7 +15,7 @@ namespace Drupal\realistic_dummy_content_api;
  * access to entities in order to override demo content in them.
  */
 
-abstract class RealisticDummyContentEntityBase extends RealisticDummyContentBase {
+abstract class RealisticDummyContentEntityBase extends \Drupal\realistic_dummy_content_api\RealisticDummyContentBase {
   private $hash;
   private $entity;
   private $type;
@@ -100,7 +100,7 @@ abstract class RealisticDummyContentEntityBase extends RealisticDummyContentBase
   /**
    * Modify the entity.
    *
-   * Subclasses of RealisticDummyContentEntityBase need to override
+   * Subclasses of \Drupal\realistic_dummy_content_api\RealisticDummyContentEntityBase need to override
    * this function to perform modifications on the entity.
    */
   abstract function Modify();

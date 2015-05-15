@@ -6,7 +6,6 @@
 
 namespace Drupal\Tests\realistic_dummy_content_api\Unit;
 use Drupal\Tests\UnitTestCase;
-use Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile;
 
 /**
  * Test pure functions for Realistic dummy content.
@@ -17,7 +16,7 @@ use Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFil
 class RealisticDummyContentUnitTestCase extends UnitTestCase {
   public function setUp() {
     // specifically include files which contain functions to test.
-    require_once DRUPAL_ROOT . '/modules/realistic_dummy_content/api/realistic_dummy_content_api.module';
+    require_once 'modules/realistic_dummy_content/api/realistic_dummy_content_api.module';
     parent::setUp();
   }
 
@@ -81,25 +80,25 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
    * Test that file names are properly parsed and combined.
    */
   function testFiles() {
-    require_once DRUPAL_ROOT . '/modules/realistic_dummy_content/api/src/RealisticDummyContentEnvironment.php';
+    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment.php';
     $data = array(
-      'one.txt' => new stdClass(),
-      'reAdme.txt' => new stdClass(),
-      'README.md' => new stdClass(),
-      'readme.jpg' => new stdClass(),
-      'two.txt' => new stdClass(),
-      'two.notanattribute.txt' => new stdClass(),
-      'two.txt.attribute.txt' => new stdClass(),
-      'two.txt.attribute1.txt' => new stdClass(),
-      'three.png' => new stdClass(),
-      'three.png.alt.txt' => new stdClass(),
+      'one.txt' => (object) array(),
+      'reAdme.txt' => (object) array(),
+      'README.md' => (object) array(),
+      'readme.jpg' => (object) array(),
+      'two.txt' => (object) array(),
+      'two.notanattribute.txt' => (object) array(),
+      'two.txt.attribute.txt' => (object) array(),
+      'two.txt.attribute1.txt' => (object) array(),
+      'three.png' => (object) array(),
+      'three.png.alt.txt' => (object) array(),
     );
     try {
       $parsed = \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::SortCandidateFiles($data);
       $parsed_images = \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment::SortCandidateFiles($data, array('png'));
     }
-    catch (Exception $e) {
-      $this->assertFalse(TRUE, 'Got exception ' . $e->getMessage());
+    catch (\Exception $e) {
+      $this->assertFalse(TRUE, 'Got \Exception ' . $e->getMessage());
     }
     $this->assertTrue(count($parsed) == 4, '4 parsed files are returned, which excludes the readme riles (4 == ' . count($parsed) . ')');
     $this->assertTrue(is_object($parsed['one.txt']['file']));
@@ -118,12 +117,13 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
    * Test that empty files and non-existing files are treated differently.
    */
   function testEmpty() {
-    module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentAttribute');
-    module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentField');
-    module_load_include('inc', 'realistic_dummy_content_api', 'includes/RealisticDummyContentValueField');
-    $field = new RealisticDummyContentValueField('ignore entity', 'ignore name');
-    $null = new RealisticDummyContentUnitTestCaseDummyFile(NULL);
-    $empty = new RealisticDummyContentUnitTestCaseDummyFile('');
+    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute.php';
+    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentField.php';
+    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentValueField.php';
+    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile.php';
+    $field = new \Drupal\realistic_dummy_content_api\RealisticDummyContentValueField('ignore entity', 'ignore name');
+    $null = new \Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile(NULL);
+    $empty = new \Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile('');
 
     $this->assertFalse(is_array($field->ValueFromFile_($null)), 'No applicable field value is represented by NULL.');
     $this->assertTrue(is_array($field->ValueFromFile_($empty)), 'An empty string is considered a valid value.');

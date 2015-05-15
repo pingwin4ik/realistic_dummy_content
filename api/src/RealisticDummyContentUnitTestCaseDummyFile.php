@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\realistic_dummy_content_api;
+
 /**
  * Dummy file, used to test how fields manage files
  */

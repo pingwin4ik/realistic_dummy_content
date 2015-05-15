@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define RealisticDummyContentLiveEnvironment autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentLiveEnvironment autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -15,7 +15,7 @@ namespace Drupal\realistic_dummy_content_api;
  * system and such. However during testing we want to abstract that away. This
  * class represents the live environment.
  */
-class RealisticDummyContentLiveEnvironment extends RealisticDummyContentEnvironment {
+class RealisticDummyContentLiveEnvironment extends \Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment {
   /**
    * {@inheritdoc}
    */

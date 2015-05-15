@@ -16,8 +16,9 @@ define('REALISTIC_DUMMY_CONTENT_RANDOM', TRUE);
 /**
  * Implements hook_entity_insert().
  */
-function realistic_dummy_content_api_entity_presave($entity, $type) {
+function realistic_dummy_content_api_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
   try {
+    $type = $entity->getEntityType();
     if (realistic_dummy_content_api_is_dummy($entity, $type)) {
       $candidate = $entity;
       realistic_dummy_content_api_improve_dummy_content($candidate, $type);
@@ -25,7 +26,7 @@ function realistic_dummy_content_api_entity_presave($entity, $type) {
       //$entity = $candidate;
     }
   }
-  catch (Exception $e) {
+  catch (\Exception $e) {
     drupal_set_message(t('realistic_dummy_content_api failed to modify dummy objects: message: @m', array('@m' => $e->getMessage())), 'error', FALSE);
   }
 }
@@ -39,16 +40,16 @@ function realistic_dummy_content_api_realistic_dummy_content_attribute_manipulat
   // own field or property type.
   switch ($machine_name) {
     case 'picture': // the user picture
-      $class = 'RealisticDummyContentUserPicture';
+      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentUserPicture';
       break;
     case 'text_with_summary': // e.g. body
-      $class = 'RealisticDummyContentTextWithSummaryField';
+      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentTextWithSummaryField';
       break;
     case 'taxonomy_term_reference': // e.g. tags on articles
-      $class = 'RealisticDummyContentTermReferenceField';
+      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentTermReferenceField';
       break;
     case 'image': // e.g. images on articles
-      $class = 'RealisticDummyContentImageField';
+      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentImageField';
       break;
     default:
       break;
@@ -87,7 +88,7 @@ function realistic_dummy_content_api_is_dummy($entity, $type) {
  *   The type of the information to change, for example 'user' or 'node'.
  *
  * @throws
- *   Exception
+ *   \Exception
  */
 function realistic_dummy_content_api_improve_dummy_content(&$entity, $type) {
   $modifiers = \Drupal::moduleHandler()->invokeAll('realistic_dummy_content_api_class', array($entity, $type));
@@ -100,29 +101,29 @@ function realistic_dummy_content_api_improve_dummy_content(&$entity, $type) {
 }
 
 /**
- * Throw an exception if an entity is not valid
+ * Throw an \Exception if an entity is not valid
  */
 function realistic_dummy_content_api_validate($entity, $type) {
-  // Throw an exception here if an entity is not valid, for example if two users
+  // Throw an \Exception here if an entity is not valid, for example if two users
   // have the same email address or name, or anything else.
   // @TODO provide a hook for third-party modules to manage this.
 }
 
 /**
- * Validate that a class is a valid subclasss of RealisticDummyContentBase
+ * Validate that a class is a valid subclasss of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase
  *
  * @param $class
  *   A class name
  *
  * @throws
- *   Exception
+ *   \Exception
  */
 function realistic_dummy_content_api_validate_class($class) {
   if (!class_exists($class)) {
-    throw new Exception(t('@class is not a valid class; make sure you include its file or use Drupal\'s autoload mechanism: name your include file with the same name as the class, and add it to the .info file, then clear your cache.', array('@class' => $class)));
+    throw new \Exception(t('@class is not a valid class; make sure you include its file or use Drupal\'s autoload mechanism: name your include file with the same name as the class, and add it to the .info file, then clear your cache.', array('@class' => $class)));
   }
-  if (!is_subclass_of($class, 'RealisticDummyContentBase')) {
-    throw new Exception(t('@class is a valid class but it is not a subclass of RealisticDummyContentBase.', array('@class' => $class)));
+  if (!is_subclass_of($class, '\Drupal\realistic_dummy_content_api\RealisticDummyContentBase')) {
+    throw new \Exception(t('@class is a valid class but it is not a subclass of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase.', array('@class' => $class)));
   }
 }
 
@@ -134,8 +135,8 @@ function realistic_dummy_content_api_realistic_dummy_content_api_class($entity, 
     // Insert class names for all classes which can modify entities for the
     // given type. These classes must exist, either through Drupal's
     // autoload system or be included explictely, and they must be
-    // subclasses of RealisticDummyContentBase
-    'RealisticDummyContentFieldModifier',
+    // subclasses of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase
+    '\Drupal\realistic_dummy_content_api\RealisticDummyContentFieldModifier',
   );
 }
 
@@ -158,7 +159,7 @@ function realistic_dummy_content_api_realistic_dummy_content_api_dummy($entity, 
       // site, or else anyone can put ".invalid" at the end of their email
       // address and their profile's content will be overridden.
       $suffix = '.invalid';
-      if (isset($entity->mail) && drupal_substr($entity->mail, strlen($entity->mail) - strlen($suffix)) == $suffix) {
+      if (isset($entity->mail) && \Drupal\Component\Utility\Unicode::substr($entity->mail, strlen($entity->mail) - strlen($suffix)) == $suffix) {
         return TRUE;
       }
       break;
@@ -260,7 +261,7 @@ function realistic_dummy_content_api_sequential($start, $end, $hash) {
  * Attempts to generate all realistic content for the current site.
  *
  * @param $log
- *   A class which implements the interface RealisticDummyContentLog. Logging
+ *   A class which implements the interface \Drupal\realistic_dummy_content_api\RealisticDummyContentLog. Logging
  *   will be different if you are using drush or in the context of an automated
  *   test, for example.
  */
@@ -268,8 +269,8 @@ function realistic_dummy_content_api_apply_recipe($log) {
   try {
     \Drupal\realistic_dummy_content_api\RealisticDummyContentRecipe::Run($log);
   }
-  catch (Exception $e) {
-    $log->log('An exception occurred while trying to apply a recipe');
+  catch (\Exception $e) {
+    $log->log('An \Exception occurred while trying to apply a recipe');
     $log->error($e->getMessage());
   }
 }

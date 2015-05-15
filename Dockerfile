@@ -10,4 +10,4 @@ RUN cd /srv/drupal/www && php ./core/scripts/run-tests.sh --php /usr/bin/php --u
 # The following issues are preventing us from running PHPUnit tests in the same run-tests.sh command as above:
 #  * https://www.drupal.org/node/2189345#comment-9923124
 #  * https://www.drupal.org/node/2488870
-RUN cd /srv/drupal/www && core/vendor/phpunit/phpunit/phpunit --bootstrap ./core/tests/bootstrap.php modules/realistic_dummy_content/api/tests/src/Unit/RealisticDummyContentUnitTestCase.php
+RUN cd /srv/drupal/www && core/vendor/phpunit/phpunit/phpunit --bootstrap ./core/tests/bootstrap.php modules/realistic_dummy_content/api/tests/src/Unit/\Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCase.php
