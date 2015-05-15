@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Define \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception autoload class.
+ * Define \Drupal\realistic_dummy_content_api\RealisticDummyContentException autoload class.
  */
 
 namespace Drupal\realistic_dummy_content_api;
@@ -18,7 +18,7 @@ define('REALISTIC_DUMMY_CONTENT_\Exception_BACKTRACE_LEVEL', 4);
  * An \Exception.
  */
 
-class \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception extends \Exception {
+class \Drupal\realistic_dummy_content_api\RealisticDummyContentException extends \Exception {
 
   function __construct($message) {
     parent::__construct($message);

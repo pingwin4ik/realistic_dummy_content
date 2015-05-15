@@ -6,7 +6,7 @@ if [ "$#" -ne  "1" ]
     echo "Usage:"
     echo ""
     echo "Mirrors this git repo from one location to another. This was introduced"
-    echo "because Travis CI only works on Github repos, whereas we want the canonical"
+    echo "because Circle CI only works on Github repos, whereas we want the canonical"
     echo "repo for this project to be on Drupal.org."
     echo ""
     echo "First make sure you have access to the source and destinations via ssh key."

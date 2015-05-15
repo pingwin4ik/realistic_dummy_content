@@ -78,17 +78,17 @@ class RealisticDummyContentFileGroup {
    *   (where attribute_name can be "b" as in the above example.)
    *
    * @throws
-   *   \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContentException
    */
   function __construct($radical, $file, $attributes) {
     if (!is_string($radical)) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use string for radical');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please use string for radical');
     }
     if ($file && !is_object($file)) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use NULL or object for file');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please use NULL or object for file');
     }
     if (!is_array($attributes)) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use array for attributes');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please use array for attributes');
     }
     $this->radical = $radical;
     $this->file = $file;
@@ -176,7 +176,7 @@ class RealisticDummyContentFileGroup {
     $filename = $this->GetRadical();
     $extension = pathinfo($filename, PATHINFO_EXTENSION);
     if (!$extension) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Files require extensions.');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Files require extensions.');
     }
     return $extension;
   }

@@ -80,7 +80,7 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
    * Test that file names are properly parsed and combined.
    */
   function testFiles() {
-    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentEnvironment.php';
+    require_once 'modules/realistic_dummy_content/api/src/RealisticDummyContentEnvironment.php';
     $data = array(
       'one.txt' => (object) array(),
       'reAdme.txt' => (object) array(),
@@ -117,10 +117,10 @@ $this->assertFALSE(realistic_dummy_content_api_realistic_dummy_content_api_dummy
    * Test that empty files and non-existing files are treated differently.
    */
   function testEmpty() {
-    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentAttribute.php';
-    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentField.php';
-    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentValueField.php';
-    require_once 'modules/realistic_dummy_content/api/src/\Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile.php';
+    require_once 'modules/realistic_dummy_content/api/src/RealisticDummyContentAttribute.php';
+    require_once 'modules/realistic_dummy_content/api/src/RealisticDummyContentField.php';
+    require_once 'modules/realistic_dummy_content/api/src/RealisticDummyContentValueField.php';
+    require_once 'modules/realistic_dummy_content/api/src/RealisticDummyContentUnitTestCaseDummyFile.php';
     $field = new \Drupal\realistic_dummy_content_api\RealisticDummyContentValueField('ignore entity', 'ignore name');
     $null = new \Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile(NULL);
     $empty = new \Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCaseDummyFile('');

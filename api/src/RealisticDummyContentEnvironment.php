@@ -64,10 +64,10 @@ abstract class RealisticDummyContentEnvironment {
    */
   function file_get_contents($filename) {
     if (!$filename) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use valid filename');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please use valid filename');
     }
     if (strpos($filename, '/') === FALSE) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use an absolute filename including its path, which must always contain at least one slash. You are using ' . $filename);
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please use an absolute filename including its path, which must always contain at least one slash. You are using ' . $filename);
     }
     $return = $this->_file_get_contents_($filename);
     return $return;
@@ -202,27 +202,18 @@ abstract class RealisticDummyContentEnvironment {
    *     three.txt => array('file' => [file object]),
    *
    * @throws
-   *   \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContentException
    */
   static function SortCandidateFiles($candidate_files, $extensions = NULL) {
     foreach ($candidate_files as $candidate_filename => $candidate_file) {
       if (!is_string($candidate_filename)) {
-        // Explicitly load the \Exception class, because during unit tests the
-        // registry is not present.
-        module_load_include('inc', 'realistic_dummy_content_api', 'includes/\Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception');
-        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('array keys should be strings');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('array keys should be strings');
       }
       if (!is_object($candidate_file)) {
-        // Explicitly load the \Exception class, because during unit tests the
-        // registry is not present.
-        module_load_include('inc', 'realistic_dummy_content_api', 'includes/\Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception');
-        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('array values should be file objects');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('array values should be file objects');
       }
       if (strpos($candidate_filename, '/') !== FALSE) {
-        // Explicitly load the \Exception class, because during unit tests the
-        // registry is not present.
-        module_load_include('inc', 'realistic_dummy_content_api', 'includes/\Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception');
-        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please do not pass file paths with slashes (/) to ' . __FUNCTION__);
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please do not pass file paths with slashes (/) to ' . __FUNCTION__);
       }
     }
     $return = self::SortCandidateFiles_($candidate_files, $extensions);
@@ -348,11 +339,11 @@ abstract class RealisticDummyContentEnvironment {
    *   The name radical of this file, for example a.txt.
    *
    * @throws
-   *   \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContentException
    */
   static function FilenameRadical($filename) {
     if (!is_string($filename)) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
     }
     return self::Replace($filename, '\1\3');
   }
@@ -389,11 +380,11 @@ abstract class RealisticDummyContentEnvironment {
    *   pattern is not found.
    *
    * @throws
-   *   \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception
+   *   \Drupal\realistic_dummy_content_api\RealisticDummyContentException
    */
   static function Replace($filename, $replace) {
     if (!is_string($filename)) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please pass ' . __FUNCTION__ . ' a string as a filename, not a ' . gettype($filename));
     }
     return preg_replace('/(^.*)\.([^\.]*)(\.[^\.]*$)/', $replace, $filename);
   }
@@ -411,7 +402,7 @@ abstract class RealisticDummyContentEnvironment {
   static function GetFileContents($file) {
     try {
       if (!is_object($file)) {
-        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please use a file object');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please use a file object');
       }
       return trim(self::Get()->file_get_contents($file->uri));
     }

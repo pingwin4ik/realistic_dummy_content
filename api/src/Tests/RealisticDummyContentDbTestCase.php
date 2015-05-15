@@ -37,21 +37,6 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
   }
 
   /*
-   * Test that attributes work correctly
-   */
-  public function testAttributes() {return;//fff
-    $node = $this->drupalCreateNode(array('type' => 'article'));
-    $modifier = new \Drupal\realistic_dummy_content_api\RealisticDummyContentFieldModifier($node, 'node');
-    $attributes = $modifier->GetAttributes();
-    $existing = array();
-    foreach ($attributes as $index => $attribute) {
-      $name = $attribute->GetName();
-      $this->assertFalse(in_array($name, $existing), 'Attribute ' . $name . ' only has one modifier');
-      $existing[] = $name;
-    }
-  }
-
-  /*
    * Test case for creating a node.
    */
   public function testNode() {
@@ -71,11 +56,15 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
       );
       $node_values['devel_generate'] = array('whatever');
       $node = entity_create('node', $node_values);
+      debug('entity ' . $i . ' created');
+      debug($node);
       $nids[$node->nid] = $node->nid;
     }
 
     // Load the nodes
     $nodes = Node::loadMultiple($nids);
+
+    debug('all nodes loaded');
 
     $expected_values = array(
       'title' => array(
@@ -159,7 +148,7 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
   /*
    * Test case for creating a user.
    */
-  public function testUser() {return;//fff
+  public function testUser() {
     // Create a user with devel_generate
 
     $generator = new \Drupal\realistic_dummy_content_api\RealisticDummyContentSimpleGenerator('user', 'user', 1);
@@ -179,7 +168,7 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
   /*
    * Test case for recipes.
    */
-  public function testRecipe() {return;//fff
+  public function testRecipe() {
     $this->assertTrue(module_load_include('inc', 'realistic_dummy_content_api', 'realistic_dummy_content_api.drush'), 'drush file exists');
     $this->assertTrue(class_exists('\Drupal\realistic_dummy_content_api\RealisticDummyContentDrushAPILog'), 'The drush log class exists; it is required when running drush generate-realistic or other drush commands');
     realistic_dummy_content_api_apply_recipe(new \Drupal\realistic_dummy_content_api\RealisticDummyContentDebugLog);
@@ -188,4 +177,20 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
     $this->assertTrue(isset($page->type) && $page->type == 'page', 'Node 4 is a page, as specified in the recipe.');
     $this->assertTrue(isset($article->type) && $article->type == 'article', 'Node 14 is an article, as specified in the recipe.');
   }
+
+  /*
+   * Test that attributes work correctly
+   */
+  public function testAttributes() {
+    $node = $this->drupalCreateNode(array('type' => 'article'));
+    $modifier = new \Drupal\realistic_dummy_content_api\RealisticDummyContentFieldModifier($node, 'node');
+    $attributes = $modifier->GetAttributes();
+    $existing = array();
+    foreach ($attributes as $index => $attribute) {
+      $name = $attribute->GetName();
+      $this->assertFalse(in_array($name, $existing), 'Attribute ' . $name . ' only has one modifier');
+      $existing[] = $name;
+    }
+  }
+
 }

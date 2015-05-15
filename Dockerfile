@@ -6,8 +6,14 @@ FROM alberto56/docker-drupal:8.0.x-dev-1.2-8.0.0-beta10
 
 ADD . ./srv/drupal/www/modules/realistic_dummy_content/
 
-RUN cd /srv/drupal/www && php ./core/scripts/run-tests.sh --php /usr/bin/php --url http://127.0.0.1/ realistic_dummy_content
 # The following issues are preventing us from running PHPUnit tests in the same run-tests.sh command as above:
 #  * https://www.drupal.org/node/2189345#comment-9923124
 #  * https://www.drupal.org/node/2488870
-RUN cd /srv/drupal/www && core/vendor/phpunit/phpunit/phpunit --bootstrap ./core/tests/bootstrap.php modules/realistic_dummy_content/api/tests/src/Unit/\Drupal\realistic_dummy_content_api\RealisticDummyContentUnitTestCase.php
+
+# Unit tests
+
+RUN cd /srv/drupal/www && core/vendor/phpunit/phpunit/phpunit --bootstrap ./core/tests/bootstrap.php modules/realistic_dummy_content/api/tests/src/Unit/RealisticDummyContentUnitTestCase.php
+
+# Tests requiring database and a webserver
+
+RUN cd /srv/drupal/www && php ./core/scripts/run-tests.sh --php /usr/bin/php --url http://127.0.0.1/ realistic_dummy_content

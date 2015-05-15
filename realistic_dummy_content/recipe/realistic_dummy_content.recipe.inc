@@ -6,10 +6,6 @@
  */
 
 class realistic_dummy_content_realistic_dummy_content_recipe extends \Drupal\realistic_dummy_content_api\RealisticDummyContentRecipe {
-  // Extending \Drupal\realistic_dummy_content_api\RealisticDummyContentRecipe only works for versions >=
-  // 7.x-1.0-beta4 of realistic_dummy_content. For previous versions, you
-  // must extend \Drupal\realistic_dummy_content_api\RealisticDummyContentAPIRecipe (which is also compatible
-  // with versions >= 7.x-1.0-beta4).
   function _Run_() {
     // If you want sequential numbering rather than random numbering, use
     // \Drupal::state()->set('realistic_dummy_content_api_rand', REALISTIC_DUMMY_CONTENT_SEQUENTIAL);

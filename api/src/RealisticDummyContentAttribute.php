@@ -285,7 +285,7 @@ abstract class RealisticDummyContentAttribute {
     try {
       $exists = $file->Value();
       if (!$exists) {
-        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please check if the file exists before attempting to save it');
+        throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please check if the file exists before attempting to save it');
       }
       $return = NULL;
       if (in_array($file->GetRadicalExtension(), $this->GetImageExtensions())) {
@@ -317,7 +317,7 @@ abstract class RealisticDummyContentAttribute {
   function FileSave($file) {
     $drupal_file = $file->GetFile();
     if (!$drupal_file) {
-      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContent\Exception('Please check if the file exists before attempting to save it');
+      throw new \Drupal\realistic_dummy_content_api\RealisticDummyContentException('Please check if the file exists before attempting to save it');
     }
     $uri = $drupal_file->uri;
     //$random = md5($uri) . rand(1000000000, 9999999999);
