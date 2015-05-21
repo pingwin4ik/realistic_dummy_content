@@ -6,6 +6,13 @@
  * here for documentation purposes only.
  */
 
+use Drupal\realistic_dummy_content_api\attributes\Field;
+use Drupal\realistic_dummy_content_api\manipulators\FieldModifier;
+use Drupal\realistic_dummy_content_api\attributes\ImageField;
+use Drupal\realistic_dummy_content_api\attributes\TermReferenceField;
+use Drupal\realistic_dummy_content_api\attributes\TextWithSummaryField;
+use Drupal\realistic_dummy_content_api\attributes\UserPicture;
+
 /**
  * @param $machine_name
  *   The machine name of the field or property, for example "title",
@@ -17,16 +24,16 @@ function hook_realistic_dummy_content_attribute_manipulator_alter(&$class, &$typ
   // own field or property type.
   switch ($machine_name) {
     case 'picture': // the user picture
-      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentUserPicture';
+      $class = 'UserPicture';
       break;
     case 'text_with_summary': // e.g. body
-      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentTextWithSummaryField';
+      $class = 'TextWithSummaryField';
       break;
     case 'taxonomy_term_reference': // e.g. tags on articles
-      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentTermReferenceField';
+      $class = 'TermReferenceField';
       break;
     case 'image': // e.g. images on articles
-      $class = '\Drupal\realistic_dummy_content_api\RealisticDummyContentImageField';
+      $class = 'ImageField';
       break;
     default:
       break;
@@ -36,7 +43,7 @@ function hook_realistic_dummy_content_attribute_manipulator_alter(&$class, &$typ
 /**
  * hook_realistic_dummy_content_api_class().
  *
- * Return any object which is a subclass of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase, which
+ * Return any object which is a subclass of Base, which
  * will be used to modify content which is deemed to be dummy content.
  *
  * @param $entity
@@ -46,15 +53,15 @@ function hook_realistic_dummy_content_attribute_manipulator_alter(&$class, &$typ
  *   The entity type of the information to change, for example 'user' or 'node'.
  *
  * @return
- *   Array of objects which are a subclass of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase.
+ *   Array of objects which are a subclass of Base.
  */
 function hook_realistic_dummy_content_api_class($entity, $type) {
   return array(
     // Insert class names for all classes which can modify entities for the
     // given type. These classes must exist, either through Drupal's
     // autoload system or be included explictely, and they must be
-    // subclasses of \Drupal\realistic_dummy_content_api\RealisticDummyContentBase
-    '\Drupal\realistic_dummy_content_api\RealisticDummyContentFieldModifier',
+    // subclasses of Base
+    'FieldModifier',
   );
 }
 

@@ -6,4 +6,4 @@ Tests herein should extend UnitTestCase
 
 They can be run with, for example:
 
-./core/vendor/phpunit/phpunit/phpunit --bootstrap ./core/tests/bootstrap.php modules/realistic_dummy_content/api/tests/src/Unit/RealisticDummyContentUnitTestCase.php
+./core/vendor/phpunit/phpunit/phpunit --bootstrap ./core/tests/bootstrap.php modules/realistic_dummy_content/api/tests/src/Unit/UnitTestCase.php

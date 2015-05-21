@@ -12,7 +12,7 @@ ADD . ./srv/drupal/www/modules/realistic_dummy_content/
 
 # Unit tests
 
-RUN cd /srv/drupal/www && core/vendor/phpunit/phpunit/phpunit --bootstrap ./core/tests/bootstrap.php modules/realistic_dummy_content/api/tests/src/Unit/RealisticDummyContentUnitTestCase.php
+RUN cd /srv/drupal/www && core/vendor/phpunit/phpunit/phpunit --bootstrap ./core/tests/bootstrap.php modules/realistic_dummy_content/api/tests/src/Unit
 
 # Tests requiring database and a webserver
 
