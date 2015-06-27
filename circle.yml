@@ -4,4 +4,4 @@ machine:
 
 test:
   override:
-    - ./scripts/test.sh
+    - ./dcycle/test.sh
