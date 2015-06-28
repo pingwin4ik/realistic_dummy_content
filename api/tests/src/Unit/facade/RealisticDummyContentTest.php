@@ -11,6 +11,11 @@ namespace Drupal\Tests\realistic_dummy_content_api\Unit\facade;
 use Drupal\Tests\UnitTestCase;
 use Drupal\realistic_dummy_content_api\facade\RealisticDummyContent;
 
+/**
+ * Test Realistic dummy content.
+ *
+ * @group realistic_dummy_content
+ */
 class RealisticDummyContentTest extends UnitTestCase {
   function testIsDummy() {
     // only pure functions should be tested here. The database is not available.

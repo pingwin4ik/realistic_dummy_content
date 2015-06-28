@@ -12,6 +12,11 @@ use Drupal\Tests\UnitTestCase;
 
 use Drupal\realistic_dummy_content_api\environments\Environment;
 
+/**
+ * Test Realistic dummy content.
+ *
+ * @group realistic_dummy_content
+ */
 class EnvironmentTest extends UnitTestCase {
   /**
    * Test that file names are properly parsed and combined.

@@ -12,6 +12,11 @@ use Drupal\Tests\UnitTestCase;
 use Drupal\realistic_dummy_content_api\attributes\ValueField;
 use Drupal\realistic_dummy_content_api\environments\UnitTestCaseDummyFile;
 
+/**
+ * Test Realistic dummy content.
+ *
+ * @group realistic_dummy_content
+ */
 class ValueFieldTest extends UnitTestCase {
   /**
    * Test that empty files and non-existing files are treated differently.

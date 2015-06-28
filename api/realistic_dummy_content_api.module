@@ -12,7 +12,7 @@ use Drupal\realistic_dummy_content_api\facade\RealisticDummyContent;
 /**
  * Implements hook_entity_insert().
  */
-function realistic_dummy_content_api_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+function realistic_dummy_content_api_entity_presave(\Drupal\Core\Entity\EntityInterface $entity) {
   return RealisticDummyContent::entity_presave($entity);
 }
 
@@ -37,7 +37,7 @@ function realistic_dummy_content_api_realistic_dummy_content_attribute_manipulat
  *   and thinks the entity is a dummy objects; FALSE otherwise.
  */
 function realistic_dummy_content_api_is_dummy($entity, $type) {
-  return RealisticDummyContent::is_dummy();
+  return RealisticDummyContent::is_dummy($entity, $type);
 }
 
 /**
@@ -53,14 +53,14 @@ function realistic_dummy_content_api_is_dummy($entity, $type) {
  *   \Exception
  */
 function realistic_dummy_content_api_improve_dummy_content(&$entity, $type) {
-  return RealisticDummyContent::improve_dummy_content();
+  return RealisticDummyContent::improve_dummy_content($entity, $type);
 }
 
 /**
  * Throw an \Exception if an entity is not valid
  */
 function realistic_dummy_content_api_validate($entity, $type) {
-  return RealisticDummyContent::validate();
+  return RealisticDummyContent::validate($entity, $type);
 }
 
 /**
@@ -73,21 +73,21 @@ function realistic_dummy_content_api_validate($entity, $type) {
  *   \Exception
  */
 function realistic_dummy_content_api_validate_class($class) {
-  return RealisticDummyContent::validate_class();
+  return RealisticDummyContent::validate_class($class);
 }
 
 /**
  * Implements hook_realistic_dummy_content_api_class().
  */
 function realistic_dummy_content_api_realistic_dummy_content_api_class($entity, $type) {
-  return RealisticDummyContent::realistic_dummy_content_api_class();
+  return RealisticDummyContent::realistic_dummy_content_api_class($entity, $type);
 }
 
 /**
  * Implements hook_realistic_dummy_content_api_dummy().
  */
 function realistic_dummy_content_api_realistic_dummy_content_api_dummy($entity, $type) {
-  return RealisticDummyContent::realistic_dummy_content_api_dummy();
+  return RealisticDummyContent::realistic_dummy_content_api_dummy($entity, $type);
 }
 
 /**
@@ -115,7 +115,7 @@ function realistic_dummy_content_api_realistic_dummy_content_api_dummy($entity, 
  *   Please see the description of realistic_dummy_content_api_sequential() for details.
  */
 function realistic_dummy_content_api_rand($start, $end, $hash = NULL) {
-  return RealisticDummyContent::rand();
+  return RealisticDummyContent::rand($start, $end, $hash);
 }
 
 /**
@@ -145,7 +145,7 @@ function realistic_dummy_content_api_rand($start, $end, $hash = NULL) {
  *   Please see the description of the $hash parameter, above.
  */
 function realistic_dummy_content_api_sequential($start, $end, $hash) {
-  return RealisticDummyContent::sequential();
+  return RealisticDummyContent::sequential($start, $end, $hash);
 }
 
 
@@ -158,5 +158,5 @@ function realistic_dummy_content_api_sequential($start, $end, $hash) {
  *   test, for example.
  */
 function realistic_dummy_content_api_apply_recipe($log) {
-  return RealisticDummyContent::apply_recipe();
+  return RealisticDummyContent::apply_recipe($log);
 }

@@ -60,15 +60,12 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
       );
       $node_values['devel_generate'] = array('whatever');
       $node = entity_create('node', $node_values);
-      debug('entity ' . $i . ' created');
-      debug($node);
-      $nids[$node->nid] = $node->nid;
+      $node->save();
+      $nids[$node->id()] = $node->id();
     }
 
     // Load the nodes
     $nodes = Node::loadMultiple($nids);
-
-    debug('all nodes loaded');
 
     $expected_values = array(
       'title' => array(
@@ -99,7 +96,7 @@ class RealisticDummyContentDbTestCase extends WebTestBase {
       $filename = $node->field_image[\Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED][0]['filename'];
       $this->assertTrue(Unicode::substr($filename, 0, Unicode::strlen('dummyfile')) == 'dummyfile', 'The image file was replaced as expected for node/article/field_image. We know this because the filename starts with the string "dummyfile"');
       if (isset($node->field_image[\Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED][0]['alt'])) {
-        $images_with_alt[$node->nid] = $node->field_image[\Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED][0]['alt'];
+        $images_with_alt[$node->id()] = $node->field_image[\Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED][0]['alt'];
       }
 
       $title = $node->title[0];

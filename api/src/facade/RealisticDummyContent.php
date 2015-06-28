@@ -28,7 +28,7 @@ class RealisticDummyContent {
   /**
    * Implements hook_entity_insert().
    */
-  static function entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  static function entity_presave(\Drupal\Core\Entity\EntityInterface $entity) {
     try {
       $type = $entity->getEntityType();
       if (RealisticDummyContent::is_dummy($entity, $type)) {
