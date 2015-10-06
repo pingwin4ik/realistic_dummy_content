@@ -13,7 +13,8 @@ use Drupal\realistic_dummy_content_api\facade\RealisticDummyContent;
  * Implements hook_entity_insert().
  */
 function realistic_dummy_content_api_entity_presave(\Drupal\Core\Entity\EntityInterface $entity) {
-  return RealisticDummyContent::entity_presave($entity);
+  $return = RealisticDummyContent::entity_presave($entity);
+  return $return;
 }
 
 /**

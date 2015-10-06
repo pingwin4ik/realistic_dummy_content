@@ -1,4 +1,4 @@
-echo -e "[  >>] Start of script $0"
+echo -e "[  >>] Start of script $0 (from $(pwd))"
 # Make sure errors propagate throughout the script
 set -e
 
@@ -11,8 +11,8 @@ if [ "$(dirname $0)" != "./dcycle/lib" ];then
   exit 1;
 fi
 
-if [ ! -f ./Dockerfile-dcycle-drupal8module ];then
-  echo -e "[error] Dockerfile-dcycle-drupal8module must exist. Please make sure that you correctly"
+if [ ! -f ./Dcycle-Dockerfile-drupal8module ];then
+  echo -e "[error] Dcycle-Dockerfile-drupal8module must exist. Please make sure that you correctly"
   echo -e "        installed "
   echo -e "        the dcycle scripts on your project, by copying the dcycle folder, and"
   echo -e "        Dockerfile, etc. to your project root."

@@ -1,0 +1,6 @@
+# See https://box.dcycle.com/
+FROM dcycle/dcyclebox-drupal8module:7
+
+ADD . /srv/drupal/www/modules/mymodule/
+
+RUN cd /srv/drupal/www && drush pml|grep 'mymodule'

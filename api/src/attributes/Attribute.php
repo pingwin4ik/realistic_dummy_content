@@ -48,6 +48,9 @@ abstract class Attribute {
 
   /**
    * Getter for $this->name
+   *
+   * @return
+   *   The name of the field, for example body or picture or field_image
    */
   function GetName() {
     return $this->name;
@@ -173,16 +176,26 @@ abstract class Attribute {
 
   /**
    * Get all candidate files for a given field for this entity.
+   *
+   * @return
+   *   An empty array if an error occurred, or if there are no files; otherwise an
+   *   array of files is returned; the array might not contain all files in case an
+   *   error occurred.
    */
   function GetCandidateFiles() {
     $files = array();
-    $moduleHandler = \Drupal::moduleHandler();
-    $modules = $moduleHandler->getModuleList();
-    foreach ($modules as $module) {
-      $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . '/realistic_dummy_content/fields/' . $this->GetEntityType() . '/' . $this->GetBundle() . '/' . $this->GetName();
-      $files = array_merge($files, Environment::GetAllFileGroups($filepath, $this->GetExtensions()));
+    try {
+      $moduleHandler = \Drupal::moduleHandler();
+      $modules = $moduleHandler->getModuleList();
+      foreach ($modules as $module) {
+        $filepath = DRUPAL_ROOT . '/' . Environment::drupalGetPath('module', $module->getName()) . '/realistic_dummy_content/fields/' . $this->GetEntityType() . '/' . $this->GetBundle() . '/' . $this->GetName();
+        $files = array_merge($files, Environment::GetAllFileGroups($filepath, $this->GetExtensions()));
+      }
+      return $files;
     }
-    return $files;
+    catch (Exception $e) {
+      return $files;
+    }
   }
 
   /**

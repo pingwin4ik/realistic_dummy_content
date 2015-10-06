@@ -130,7 +130,7 @@ class FileGroup {
     try {
       $file = $this->GetFile();
       if (isset($file->uri)) {
-        return trim(\Environment::Get()->file_get_contents($file->uri));
+        return trim(Environment::Get()->file_get_contents($file->uri));
       }
       else {
         return NULL;

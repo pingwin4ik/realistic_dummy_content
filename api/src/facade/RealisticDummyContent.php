@@ -35,7 +35,7 @@ class RealisticDummyContent {
         $candidate = $entity;
         RealisticDummyContent::improve_dummy_content($candidate, $type);
         RealisticDummyContent::validate($candidate, $type);
-        //$entity = $candidate;
+        $entity = $candidate;
       }
     }
     catch (\Exception $e) {
@@ -132,10 +132,10 @@ class RealisticDummyContent {
    */
   static function validate_class($class) {
     if (!class_exists($class)) {
-      throw new \Exception(t('@class is not a valid class; make sure you include its file or use Drupal\'s autoload mechanism: name your include file with the same name as the class, and add it to the .info file, then clear your cache.', array('@class' => $class)));
+      throw new \Exception(t('@class is not a valid class; make sure you include its full namespace and that it is properly defined, and that you have cleared your cache.', array('@class' => $class)));
     }
-    if (!is_subclass_of($class, 'Base')) {
-      throw new \Exception(t('@class is a valid class but it is not a subclass of Base.', array('@class' => $class)));
+    if (!is_subclass_of($class, '\Drupal\realistic_dummy_content_api\manipulators\Base')) {
+      throw new \Exception(t('@class is a valid class but it is not a subclass of \Drupal\realistic_dummy_content_api\manipulators\Base.', array('@class' => $class)));
     }
   }
 
@@ -148,7 +148,7 @@ class RealisticDummyContent {
       // given type. These classes must exist, either through Drupal's
       // autoload system or be included explictely, and they must be
       // subclasses of Base
-      'FieldModifier',
+      '\Drupal\realistic_dummy_content_api\manipulators\FieldModifier',
     );
   }
 

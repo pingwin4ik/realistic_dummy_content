@@ -1,4 +1,4 @@
-echo -e "[  >>] Start of script $0"
+echo -e "[  >>] Start of script $0 (from $(pwd))"
 echo -e "\n* * * * * * * * * * * * * * * * * * * * * * * * "
 echo -e "DCYCLE deploy.sh"
 echo -e "See http://box.dcycle.com for instructions and"
@@ -26,17 +26,25 @@ else
     esac
   done
 
-  # dev is the only available environment type for now, we eventually will want
-  # prod as well.
-  ENV='dev'
-  PROJECTNAME=$(basename $(pwd))-$ENV-$NAME
+  if [ "$ENV" != "internal" ] && [ "$ENV" != "dev" ] && [ "$ENV" != "dev" ]
+    then
+      echo -e "[info] You did not specify the -e flag as test or dev, or specified it"
+      echo -e "       as an invalid value, we are assuming dev."
+      ENV='dev'
+  fi
+  if [ -z "$NAME" ]; then
+    echo -e "[notice] The argument -n was not set, so we are assuming 'normal'"
+    NAME=normal;
+  fi
+
+  DIRNAME=$(basename $(pwd))
+
+  PROJECTNAME=$DIRNAME-$ENV-$NAME
 
   echo -e "[info] The project name has been determined based on the directory name of"
   echo -e "       your project and environment type:"
   echo -e "       $PROJECTNAME"
 
-  echo -e "[info] Creating _site directory if it does not exist"
-  mkdir -p _site
   echo -e "[info] Starting build"
   ./dcycle/lib/build-$ENV.sh $PORT $PROJECTNAME
 fi

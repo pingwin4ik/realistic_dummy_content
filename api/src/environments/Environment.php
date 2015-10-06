@@ -415,4 +415,17 @@ abstract class Environment {
     }
   }
 
+  /**
+   * Wrapper around drupal_get_path().
+   *
+   * @throws
+   *   Exception
+   */
+  static function drupalGetPath($type, $name) {
+    if (!is_string($name)) {
+      throw new Exception('Please use a string as a name when calling drupalGetPath()');
+    }
+    return drupal_get_path($type, $name);
+  }
+
 }

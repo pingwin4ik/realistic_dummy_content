@@ -9,6 +9,7 @@
 namespace Drupal\realistic_dummy_content_api\manipulators;
 
 use Drupal\realistic_dummy_content_api\manipulators\Base;
+use Drupal\realistic_dummy_content_api\loggers\Exception;
 
 /**
  * Generic entity manipulator.
@@ -37,6 +38,9 @@ abstract class EntityBase extends Base {
 
   /**
    * Getter for the entity.
+   *
+   * @return
+   *   An entity object, for example \Drupal\node\Entity\Node
    */
   function GetEntity() {
     return $this->entity;
@@ -72,7 +76,7 @@ abstract class EntityBase extends Base {
    *   The entity type, for example "node" or "user".
    */
   function GetType() {
-    $return = $this->type;
+    $return = $this->type->get('id');
     return $return;
   }
 
@@ -90,12 +94,17 @@ abstract class EntityBase extends Base {
    */
   function GetBundle() {
     $entity = $this->GetEntity();
-    if (isset($entity->type)) {
-      return $entity->type;
+    $type = $entity->getType();
+    if ($type) {
+      $return = $type;
     }
     else {
-      return $this->GetType();
+      $return = $this->GetType();
     }
+    if (!is_string($return)) {
+      throw new Exception('EntityBase::GetBundle() internal error, not returning a string');
+    }
+    return $return;
   }
 
   /**
