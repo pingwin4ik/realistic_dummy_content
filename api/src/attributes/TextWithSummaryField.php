@@ -24,10 +24,10 @@ class TextWithSummaryField extends Field {
     $format = $file->Attribute('format', 'filtered_html');
     // If the value cannot be determined, which is different from an empty string.
     if ($value === NULL) {
-      return NULL;
+      $return = NULL;
     }
-    if ($value) {
-      return array(
+    elseif ($value) {
+      $return = array(
         \Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED => array(
           array(
             'value' => $value,
@@ -37,8 +37,9 @@ class TextWithSummaryField extends Field {
       );
     }
     else {
-      return array();
+      $return = array();
     }
+    return $return;
   }
 
 }

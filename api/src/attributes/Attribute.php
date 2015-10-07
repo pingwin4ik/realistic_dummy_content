@@ -341,7 +341,7 @@ abstract class Attribute {
     $random = $file->GetRadical();
     $drupal_file = $this->env()->file_save_data($file->Value(), 'public://dummyfile' . $random . '.' . $file->GetRadicalExtension());
     $drupal_file->uid = $this->GetUid();
-    $return = file_save($drupal_file);
+    $return = $drupal_file->save();
     return $return;
   }
 

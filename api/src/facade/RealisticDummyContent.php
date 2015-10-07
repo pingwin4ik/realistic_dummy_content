@@ -17,6 +17,7 @@ use Drupal\realistic_dummy_content_api\recipes\Recipe;
 use Drupal\realistic_dummy_content_api\attributes\TermReferenceField;
 use Drupal\realistic_dummy_content_api\attributes\TextWithSummaryField;
 use Drupal\realistic_dummy_content_api\attributes\UserPicture;
+use Drupal\realistic_dummy_content_api\loggers\Exception;
 
 class RealisticDummyContent {
   /**
@@ -52,16 +53,16 @@ class RealisticDummyContent {
     // own field or property type.
     switch ($machine_name) {
       case 'picture': // the user picture
-        $class = 'UserPicture';
+        $class = 'Drupal\realistic_dummy_content_api\attributes\UserPicture';
         break;
       case 'text_with_summary': // e.g. body
-        $class = 'TextWithSummaryField';
+        $class = 'Drupal\realistic_dummy_content_api\attributes\TextWithSummaryField';
         break;
       case 'taxonomy_term_reference': // e.g. tags on articles
-        $class = 'TermReferenceField';
+        $class = 'Drupal\realistic_dummy_content_api\attributes\TermReferenceField';
         break;
       case 'image': // e.g. images on articles
-        $class = 'ImageField';
+        $class = 'Drupal\realistic_dummy_content_api\attributes\ImageField';
         break;
       default:
         break;

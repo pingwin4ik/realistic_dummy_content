@@ -6,15 +6,17 @@
  * here for documentation purposes only.
  */
 
-use Drupal\realistic_dummy_content_api\attributes\Field;
-use Drupal\realistic_dummy_content_api\manipulators\FieldModifier;
-use Drupal\realistic_dummy_content_api\attributes\ImageField;
-use Drupal\realistic_dummy_content_api\attributes\TermReferenceField;
-use Drupal\realistic_dummy_content_api\attributes\TextWithSummaryField;
-use Drupal\realistic_dummy_content_api\attributes\UserPicture;
-
 /**
- * @param $machine_name
+ * @param &$class
+ *   The original class name, fully qualified with its namespace, which is set to
+ *   manipulate attributes of this type. For example, if the machine name of a field
+ *   type is text_with_summary, because this is a field, Realistic Dummy Content will
+ *   use the field manipulator by default, however, that is not enough to
+ *   manipulate this field which is more complex (contains a summary, text format...)
+ *   so another class will be used instead. If you are a developer, your module
+ *   can define which class manipulates fields of given types. See the
+ *   TextWithSummaryField class, included with this module, for an example.
+ * @param &$machine_name
  *   The machine name of the field or property, for example "title",
  *   "text_with_summary", or "picture".
  */
@@ -24,16 +26,16 @@ function hook_realistic_dummy_content_attribute_manipulator_alter(&$class, &$typ
   // own field or property type.
   switch ($machine_name) {
     case 'picture': // the user picture
-      $class = 'UserPicture';
+      $class = 'Drupal\realistic_dummy_content_api\attributes\UserPicture';
       break;
     case 'text_with_summary': // e.g. body
-      $class = 'TextWithSummaryField';
+      $class = 'Drupal\realistic_dummy_content_api\attributes\TextWithSummaryField';
       break;
     case 'taxonomy_term_reference': // e.g. tags on articles
-      $class = 'TermReferenceField';
+      $class = 'Drupal\realistic_dummy_content_api\attributes\TermReferenceField';
       break;
     case 'image': // e.g. images on articles
-      $class = 'ImageField';
+      $class = 'Drupal\realistic_dummy_content_api\attributes\ImageField';
       break;
     default:
       break;

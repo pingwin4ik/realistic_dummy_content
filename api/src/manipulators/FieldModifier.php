@@ -100,8 +100,14 @@ class FieldModifier extends EntityBase {
    *
    * @return
    *   Associative array with:
-   *     original_class => string
-   *     attribute_type => string
+   *     original_class => string, corresponds to the fully qualified (with namespace)
+   *       class name of the class which should manipulate this type of attribute. For
+   *       example, any fields are manipulate by a "value field" manipulator, and and
+   *       any properties (titles, created) are manipulated by a text property
+   *       manipulator. Certain fields are complex, though, so this module provides
+   *       an alter hook (see hook_realistic_dummy_content_attribute_manipulator_alter()).
+   *     attribute_type => string, corresponds the type of attribute with which we are
+   *       dealing, for example text_with_summary, title...
    *
    * @throws
    *   Exception
@@ -125,7 +131,7 @@ class FieldModifier extends EntityBase {
         if (!$field_info) {
           throw new Exception('Unable to load field_config entity named ' . $full_name);
         }
-        $attribute_type = $field_info->getEntityTypeId();
+        $attribute_type = $field_info->getType();
         break;
       default:
         throw new Exception('Please use the type property or field_config');
@@ -177,6 +183,7 @@ class FieldModifier extends EntityBase {
       throw new Exception('Name must be a string');
     }
     $info = $this->getBaseInfo($type, $name);
+
     $original_class = $info['original_class'];
     $attribute_type = $info['attribute_type'];
 
@@ -194,7 +201,7 @@ class FieldModifier extends EntityBase {
       $modifier = new $class($this, $name);
     }
     else {
-      \Drupal::logger('realistic_dummy_content_api')->notice(t('Class does not exist: @c. This is probably because a third-party module has implemented realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter() with a class that cannot be implemented. @original will used instead.', array('@c' => $class, '@original' => $original_class)));
+      \Drupal::logger('realistic_dummy_content_api')->notice(t('Class does not exist: @c. This might be because a third-party module has implemented realistic_dummy_content_api_realistic_dummy_content_attribute_manipular_alter() with a class that cannot be implemented, or which is not fully qualified with its namespace. @original will used instead.', array('@c' => $class, '@original' => $original_class)));
       $modifier = new $original_class($this, $name);
     }
 
